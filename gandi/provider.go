@@ -15,6 +15,13 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_KEY", nil),
 				Description: "A Gandi LiveDNS API key",
 			},
+			"sharing_id": &schema.Schema{
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("GANDI_SHARING_ID", nil),
+				Description: "A Gandi LiveDNS sharing_id",
+			},
+	
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"gandi_zone":             resourceZone(),
@@ -26,6 +33,6 @@ func Provider() *schema.Provider {
 }
 
 func getGandiClient(d *schema.ResourceData) (interface{}, error) {
-	gandiClient := g.New(d.Get("key").(string))
+	gandiClient := g.New(d.Get("key").(string),d.Get("sharing_id").(string))
 	return gandiClient, nil
 }
