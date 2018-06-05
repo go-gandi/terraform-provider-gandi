@@ -53,3 +53,13 @@ func resourceDomainattachmentRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("zone", domain.ZoneUUID)
 	return nil
 }
+
+func resourceDomainattachmentDelete(d *schema.ResourceData, m interface{}) error {
+	client := m.(*g.Gandi)
+	err := client.DetachDomain(d.Id())
+	if err != nil {
+		return err
+	}
+	d.SetId("")
+	return nil
+}
