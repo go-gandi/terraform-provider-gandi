@@ -7,15 +7,15 @@ This provider allows managing DNS records on the Gandi LiveDNS service.
 ## Compiling
 
 ```
-go get
-go build -o terraform-provider-gandi
+go get github.com/tiramiseb/terraform-provider-gandi/cmd/terraform-provider-gandi
 ```
 
 ## Example
 
 This example partly mimics the steps of [the official LiveDNS documentation example](http://doc.livedns.gandi.net/#quick-example), using the parts that have been implemented as Terraform resources.
-Note: sharing_id is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization). 
-```
+Note: `sharing_id` is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization). 
+
+```HCL
 provider "gandi" {
   key = "<the API key>"
   sharing_id = "<the sharing_id>"
