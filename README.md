@@ -6,9 +6,9 @@ https://doc.livedns.gandi.net/
 
 **This provider is only for the LiveDNS service: it does not deal with Gandi's other API, which allows managing other services**
 
-## Is this provider alive?
+## Is this provider alive? yes!
 
-I know we are generally worried when using libs with few commits and not much activity. Please note I am still using this provider (dogfooding, yay!), it is working and, I *will* fix problems if I encounter some and I *will* answer issues whenever needed (even if - shame on me - I sometimes take long time fixing what I consider minor issues).
+I know we are generally worried when using libs with few commits and not much activity. Please note I am still using this provider (dogfooding, yay!), it is working, I *will* fix problems if I encounter some and I *will* answer issues whenever needed (even if - shame on me - I sometimes take long time fixing what I consider minor issues).
 
 (written on 2018-08-19)
 
