@@ -1,6 +1,7 @@
 package gandi
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -52,8 +53,14 @@ func makeZonerecordID(zone, name, recordType string) string {
 	return fmt.Sprintf("%s/%s/%s", zone, name, recordType)
 }
 
-func unmakeZonerecordID(id string) (zone, name, recordType string) {
+func unmakeZonerecordID(id string) (zone, name, recordType string, err error) {
 	splitID := strings.Split(id, "/")
+
+	if len(splitID) != 3 {
+		err = errors.New("Id format should be '{zone_id}/{record_name}/{record_type}'")
+		return
+	}
+
 	zone = splitID[0]
 	name = splitID[1]
 	recordType = splitID[2]
@@ -82,7 +89,7 @@ func resourceZonerecordCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceZonerecordRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*g.Gandi)
-	zone, name, recordType := unmakeZonerecordID(d.Id())
+	zone, name, recordType, err := unmakeZonerecordID(d.Id())
 	record, err := client.GetZoneRecordWithNameAndType(zone, name, recordType)
 	if err != nil {
 		return err
@@ -98,32 +105,49 @@ func resourceZonerecordRead(d *schema.ResourceData, m interface{}) error {
 
 func resourceZonerecordUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*g.Gandi)
-	zone, name, recordType := unmakeZonerecordID(d.Id())
+	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+
+	if err != nil {
+		return err
+	}
+
 	ttl := d.Get("ttl").(int)
 	valuesList := d.Get("values").(*schema.Set).List()
 	var values []string
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	_, err := client.ChangeZoneRecordWithNameAndType(zone, name, recordType, ttl, values)
+	_, err = client.ChangeZoneRecordWithNameAndType(zone, name, recordType, ttl, values)
 	return err
 }
 
 func resourceZonerecordDelete(d *schema.ResourceData, m interface{}) error {
 	client := m.(*g.Gandi)
-	zone, name, recordType := unmakeZonerecordID(d.Id())
-	err := client.DeleteZoneRecord(zone, name, recordType)
+	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+
 	if err != nil {
 		return err
 	}
+
+	err = client.DeleteZoneRecord(zone, name, recordType)
+
+	if err != nil {
+		return err
+	}
+
 	d.SetId("")
 	return nil
 }
 
 func resourceZonerecordExists(d *schema.ResourceData, m interface{}) (bool, error) {
 	client := m.(*g.Gandi)
-	zone, name, recordType := unmakeZonerecordID(d.Id())
-	_, err := client.GetZoneRecordWithNameAndType(zone, name, recordType)
+	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+
+	if err != nil {
+		return false, err
+	}
+
+	_, err = client.GetZoneRecordWithNameAndType(zone, name, recordType)
 	if err != nil {
 		if strings.Index(err.Error(), "404") == 0 {
 			return false, nil
