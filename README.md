@@ -4,13 +4,7 @@ This provider allows managing DNS records on the Gandi LiveDNS service.
 
 https://doc.livedns.gandi.net/
 
-**This provider is only for the LiveDNS service: it does not deal with Gandi's other API, which allows managing other services**
-
-## Is this provider alive? yes!
-
-I know we are generally worried when using libs with few commits and not much activity. Please note I am still using this provider (dogfooding, yay!), it is working, I *will* fix problems if I encounter some and I *will* answer issues whenever needed (even if - shame on me - I sometimes take long time fixing what I consider minor issues).
-
-(written on 2018-08-19)
+This provider doesn't provide access to the other Gandi API (https://doc.rpc.gandi.net/); if you want to contribute, don't hesitate!
 
 ## Compiling
 
@@ -50,3 +44,9 @@ resource "gandi_domainattachment" "example_com" {
 ```
 
 This example sums up the available resources.
+
+## Licensing and stuff
+
+This provider is distributed under the terms of the Mozilla Public License version 2.0. See the `LICENSE` file.
+
+Its main author is not affiliated in any way with Gandi - apart from being a happy customer of their services.
