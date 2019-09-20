@@ -22,6 +22,9 @@ func Provider() *schema.Provider {
 				Description: "A Gandi LiveDNS sharing_id",
 			},
 		},
+		DataSourcesMap: map[string]*schema.Resource{
+			"gandi_zone": dataSourceZone(),
+		},
 		ResourcesMap: map[string]*schema.Resource{
 			"gandi_zone":             resourceZone(),
 			"gandi_zonerecord":       resourceZonerecord(),
