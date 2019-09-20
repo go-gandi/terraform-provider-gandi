@@ -16,6 +16,7 @@ go build -o terraform-provider-gandi
 
 This example partly mimics the steps of [the official LiveDNS documentation example](http://doc.livedns.gandi.net/#quick-example), using the parts that have been implemented as Terraform resources.
 Note: sharing_id is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization). 
+
 ```
 provider "gandi" {
   key = "<the API key>"
@@ -43,6 +44,36 @@ resource "gandi_domainattachment" "example_com" {
 ```
 
 This example sums up the available resources.
+
+### Zone data source
+
+If your zone already exists (which is very likely), you may use it as a data source:
+
+```
+provider "gandi" {
+  key = "<the API key>"
+  sharing_id = "<the sharing_id>"
+}
+
+data "gandi_zone" "example_com" {
+  name = "example.com"
+}
+
+resource "gandi_zonerecord" "www" {
+  zone = "${gandi_zone.example_com.id}"
+  name = "www"
+  type = "A"
+  ttl = 3600
+  values = [
+    "192.168.0.1"
+  ]
+}
+
+resource "gandi_domainattachment" "example_com" {
+  domain = "example.com"
+  zone   = "${data.gandi_zone.example_com.id}"
+}
+```
 
 ## Licensing and stuff
 
