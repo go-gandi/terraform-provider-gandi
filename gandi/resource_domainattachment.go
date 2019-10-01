@@ -3,7 +3,7 @@ package gandi
 // A domain is always attached to a zone, so "delete" will not do anything
 
 import (
-	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	g "github.com/tiramiseb/go-gandi-livedns"
 )
 
