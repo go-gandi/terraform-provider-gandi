@@ -32,6 +32,7 @@ func dataSourceGandiZoneRead(d *schema.ResourceData, meta interface{}) error {
 	for _, zone := range zones {
 		if zone.Name == name {
 			found = &zone
+			break
 		}
 	}
 	if found == nil {
