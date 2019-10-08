@@ -60,7 +60,7 @@ data "gandi_zone" "example_com" {
 }
 
 resource "gandi_zonerecord" "www" {
-  zone = "${gandi_zone.example_com.id}"
+  zone = "${data.gandi_zone.example_com.id}"
   name = "www"
   type = "A"
   ttl = 3600
