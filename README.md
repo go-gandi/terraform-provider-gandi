@@ -9,6 +9,12 @@ This provider doesn't provide access to the other Gandi API (https://doc.rpc.gan
 ## Compiling
 
 ```
+make
+```
+
+or 
+
+```
 go build -o terraform-provider-gandi
 ```
 
