@@ -26,3 +26,5 @@ require (
 )
 
 go 1.13
+
+replace github.com/tiramiseb/go-gandi-livedns => github.com/thommay/go-gandi-livedns v0.0.0-20200109141006-326f03d7e0a7
