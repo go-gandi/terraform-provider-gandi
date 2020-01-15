@@ -4,16 +4,15 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	g "github.com/tiramiseb/go-gandi-livedns"
+	"github.com/tiramiseb/go-gandi-livedns/gandi_livedns"
 )
 
-func resourceZone() *schema.Resource {
+func resourceLiveDNSDomain() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceZoneCreate,
-		Read:   resourceZoneRead,
-		Update: resourceZoneUpdate,
-		Delete: resourceZoneDelete,
-		Exists: resourceZoneExists,
+		Create: resourceLiveDNSDomainCreate,
+		Read:   resourceLiveDNSDomainRead,
+		Delete: resourceLiveDNSDomainDelete,
+		Exists: resourceLiveDNSDomainExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -23,14 +22,19 @@ func resourceZone() *schema.Resource {
 				Type:     schema.TypeString,
 				Required: true,
 			},
+			"ttl": {
+					Type: schema.TypeInt,
+					Required: true,
+			},
 		},
 	}
 }
 
-func resourceZoneCreate(d *schema.ResourceData, m interface{}) error {
+func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
-	client := m.(*g.Gandi)
-	response, err := client.CreateZone(name)
+	ttl := d.Get("ttl").(int)
+	client := m.(*gandi_livedns.LiveDNS)
+	response, err := client.CreateDomain(name, ttl)
 	if err != nil {
 		return err
 	}
@@ -38,36 +42,24 @@ func resourceZoneCreate(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceZoneRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	zone, err := client.GetZone(d.Id())
+func resourceLiveDNSDomainRead(d *schema.ResourceData, m interface{}) error {
+	client := m.(*gandi_livedns.LiveDNS)
+	zone, err := client.GetDomain(d.Id())
 	if err != nil {
 		return err
 	}
-	d.Set("name", zone.Name)
+	d.Set("name", zone.FQDN)
 	return nil
 }
 
-func resourceZoneUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	name := d.Get("name").(string)
-	_, err := client.UpdateZone(d.Id(), name)
-	return err
-}
-
-func resourceZoneDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	err := client.DeleteZone(d.Id())
-	if err != nil {
-		return err
-	}
+func resourceLiveDNSDomainDelete(d *schema.ResourceData, m interface{}) error {
 	d.SetId("")
 	return nil
 }
 
-func resourceZoneExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*g.Gandi)
-	_, err := client.GetZone(d.Id())
+func resourceLiveDNSDomainExists(d *schema.ResourceData, m interface{}) (bool, error) {
+	client := m.(*gandi_livedns.LiveDNS)
+	_, err := client.GetDomain(d.Id())
 	if err != nil {
 		if strings.Index(err.Error(), "404") == 0 {
 			return false, nil
