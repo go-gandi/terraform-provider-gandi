@@ -6,7 +6,7 @@ PKG_NAME=gandi
 default: build
 
 build: fmtcheck
-	go install
+	go build -o terraform-provider-gandi
 
 test: fmtcheck
 	go test -i $(TEST) || exit 1

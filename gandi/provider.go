@@ -26,6 +26,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain": dataSourceLiveDNSDomain(),
+			"gandi_domain":         dataSourceDomain(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain": resourceLiveDNSDomain(),
