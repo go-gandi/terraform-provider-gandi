@@ -1,18 +1,17 @@
-package gandi_domain
+package domain
 
 import (
 	"time"
 
-	"github.com/tiramiseb/go-gandi-livedns/gandi_config"
-	"github.com/tiramiseb/go-gandi-livedns/internal/client"
+	"github.com/tiramiseb/go-gandi/internal/client"
 )
 
 type Domain struct {
 	client client.Gandi
 }
 
-func New(apikey string, config gandi_config.Config) *Domain {
-	client := client.New(apikey, config)
+func New(apikey string, sharingid string, debug bool) *Domain {
+	client := client.New(apikey, sharingid, debug)
 	client.SetEndpoint("domain/")
 	return &Domain{client: *client}
 }
@@ -86,7 +85,7 @@ type DomainListResponse struct {
 
 // AutoRenew is the auto renewal information for the domain
 type AutoRenew struct {
-	Href     string      `json:"string"`
+	Href     string      `json:"href"`
 	Dates    []time.Time `json:"dates,omitempty"`
 	Duration int         `json:"duration,omitempty"`
 	Enabled  *bool       `json:"enabled,omitempty"`

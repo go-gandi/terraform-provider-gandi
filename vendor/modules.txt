@@ -192,12 +192,11 @@ github.com/posener/complete/cmd/install
 # github.com/spf13/afero v1.2.2
 github.com/spf13/afero
 github.com/spf13/afero/mem
-# github.com/tiramiseb/go-gandi-livedns v0.0.0-20180605212906-4773a84f8ee7 => github.com/thommay/go-gandi-livedns v0.0.0-20200109141006-326f03d7e0a7
-github.com/tiramiseb/go-gandi-livedns
-github.com/tiramiseb/go-gandi-livedns/gandi_config
-github.com/tiramiseb/go-gandi-livedns/gandi_domain
-github.com/tiramiseb/go-gandi-livedns/gandi_livedns
-github.com/tiramiseb/go-gandi-livedns/internal/client
+# github.com/tiramiseb/go-gandi v0.0.0-20200115114438-265b30e0c55c => ../go-gandi
+github.com/tiramiseb/go-gandi
+github.com/tiramiseb/go-gandi/domain
+github.com/tiramiseb/go-gandi/internal/client
+github.com/tiramiseb/go-gandi/livedns
 # github.com/ulikunitz/xz v0.5.6
 github.com/ulikunitz/xz
 github.com/ulikunitz/xz/internal/hash

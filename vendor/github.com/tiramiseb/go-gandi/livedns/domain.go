@@ -1,6 +1,6 @@
-package gandi_livedns
+package livedns
 
-import "github.com/tiramiseb/go-gandi-livedns/internal/client"
+import "github.com/tiramiseb/go-gandi/internal/client"
 
 // Domain represents a DNS domain
 type Domain struct {
@@ -26,16 +26,28 @@ type SigningKey struct {
 	KeyHref       string `json:"key_href,omitempty"`
 }
 
+type zone struct {
+	TTL int `json:"ttl"`
+}
+
+type createDomainRequest struct {
+	FQDN string `json:"fqdn"`
+	Zone zone `json:"zone,omitempty"`
+}
+
+type UpdateDomainRequest struct {
+	AutomaticSnapshots *bool `json:"automatic_snapshots,omitempty"`
+}
+
 // ListDomains lists all domains
 func (g *LiveDNS) ListDomains() (domains []Domain, err error) {
 	_, err = g.client.Get("domains", nil, &domains)
 	return
 }
 
-// AddDomainToZone adds a domain to a zone
-// It is equivalent to AttachDomainToZone, the only difference is the entry point in the LiveDNS API.
-func (g *LiveDNS) AddDomainToZone(fqdn, uuid string) (response client.StandardResponse, err error) {
-	_, err = g.client.Post("domains", Domain{FQDN: fqdn, ZoneUUID: uuid}, &response)
+// CreateDomain adds a domain to a zone
+func (g *LiveDNS) CreateDomain(fqdn string, ttl int) (response client.StandardResponse, err error) {
+	_, err = g.client.Post("domains", createDomainRequest{FQDN: fqdn, Zone: zone{TTL: ttl}}, &response)
 	return
 }
 
@@ -46,8 +58,8 @@ func (g *LiveDNS) GetDomain(fqdn string) (domain Domain, err error) {
 }
 
 // ChangeAssociatedZone changes the zone associated to a domain
-func (g *LiveDNS) ChangeAssociatedZone(fqdn, uuid string) (response client.StandardResponse, err error) {
-	_, err = g.client.Patch("domains/"+fqdn, Domain{ZoneUUID: uuid}, &response)
+func (g *LiveDNS) UpdateDomain(fqdn string, details UpdateDomainRequest) (response client.StandardResponse, err error) {
+	_, err = g.client.Patch("domains/"+fqdn, details, &response)
 	return
 }
 

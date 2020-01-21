@@ -1,6 +1,6 @@
-package gandi_livedns
+package livedns
 
-import "github.com/tiramiseb/go-gandi-livedns/internal/client"
+import "github.com/tiramiseb/go-gandi/internal/client"
 
 // Snapshot represents a zone snapshot
 type Snapshot struct {

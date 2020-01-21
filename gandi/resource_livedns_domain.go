@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/tiramiseb/go-gandi-livedns/gandi_livedns"
+	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 func resourceLiveDNSDomain() *schema.Resource {
@@ -33,7 +33,7 @@ func resourceLiveDNSDomain() *schema.Resource {
 func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
 	ttl := d.Get("ttl").(int)
-	client := m.(*gandi_livedns.LiveDNS)
+	client := m.(*livedns.LiveDNS)
 	response, err := client.CreateDomain(name, ttl)
 	if err != nil {
 		return err
@@ -43,7 +43,7 @@ func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSDomainRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*gandi_livedns.LiveDNS)
+	client := m.(*livedns.LiveDNS)
 	zone, err := client.GetDomain(d.Id())
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func resourceLiveDNSDomainDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSDomainExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*gandi_livedns.LiveDNS)
+	client := m.(*livedns.LiveDNS)
 	_, err := client.GetDomain(d.Id())
 	if err != nil {
 		if strings.Index(err.Error(), "404") == 0 {
