@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/tiramiseb/go-gandi-livedns/gandi_livedns"
+	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 func dataSourceLiveDNSDomain() *schema.Resource {
@@ -21,7 +21,7 @@ func dataSourceLiveDNSDomain() *schema.Resource {
 }
 
 func dataSourceGandiLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*gandi_livedns.LiveDNS)
+	client := meta.(*livedns.LiveDNS)
 	name := d.Get("name").(string)
 	log.Printf("[INFO] Reading Gandi zone '%s'", name)
 	found,err := client.GetDomain(name)

@@ -2,10 +2,9 @@ package gandi
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	g "github.com/tiramiseb/go-gandi-livedns"
-	"github.com/tiramiseb/go-gandi-livedns/gandi_config"
-	"github.com/tiramiseb/go-gandi-livedns/gandi_domain"
-	"github.com/tiramiseb/go-gandi-livedns/gandi_livedns"
+	"github.com/tiramiseb/go-gandi"
+	"github.com/tiramiseb/go-gandi/domain"
+	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 // Provider is the provider itself
@@ -37,14 +36,14 @@ func Provider() *schema.Provider {
 }
 
 type GandiClients struct {
-	Domain  *gandi_domain.Domain
-	LiveDNS *gandi_livedns.LiveDNS
+	Domain  *domain.Domain
+	LiveDNS *livedns.LiveDNS
 }
 
 func getGandiClient(d *schema.ResourceData) (interface{}, error) {
-	config := gandi_config.Config{SharingID: d.Get("sharing_id").(string)}
-	liveDNS := g.NewLiveDNSClient(d.Get("key").(string), config)
-	domain := g.NewDomainClient(d.Get("key").(string), config)
+	config := gandi.Config{SharingID: d.Get("sharing_id").(string)}
+	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
+	domain := gandi.NewDomainClient(d.Get("key").(string), config)
 
 	return &GandiClients{
 		Domain:  domain,

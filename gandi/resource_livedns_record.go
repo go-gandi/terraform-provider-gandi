@@ -6,16 +6,16 @@ import (
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	g "github.com/tiramiseb/go-gandi-livedns"
+	"github.com/tiramiseb/go-gandi/livedns"
 )
 
-func resourceZonerecord() *schema.Resource {
+func resourceLiveDNSRecord() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceZonerecordCreate,
-		Read:   resourceZonerecordRead,
-		Update: resourceZonerecordUpdate,
-		Delete: resourceZonerecordDelete,
-		Exists: resourceZonerecordExists,
+		Create: resourceLiveDNSRecordCreate,
+		Read:   resourceLiveDNSRecordRead,
+		Update: resourceLiveDNSRecordUpdate,
+		Delete: resourceLiveDNSRecordDelete,
+		Exists: resourceLiveDNSRecordExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
@@ -49,11 +49,11 @@ func resourceZonerecord() *schema.Resource {
 	}
 }
 
-func makeZonerecordID(zone, name, recordType string) string {
+func makeRecordID(zone, name, recordType string) string {
 	return fmt.Sprintf("%s/%s/%s", zone, name, recordType)
 }
 
-func unmakeZonerecordID(id string) (zone, name, recordType string, err error) {
+func explodeRecordID(id string) (zone, name, recordType string, err error) {
 	splitID := strings.Split(id, "/")
 
 	if len(splitID) != 3 {
@@ -67,7 +67,7 @@ func unmakeZonerecordID(id string) (zone, name, recordType string, err error) {
 	return
 }
 
-func resourceZonerecordCreate(d *schema.ResourceData, m interface{}) error {
+func resourceLiveDNSRecordCreate(d *schema.ResourceData, m interface{}) error {
 	zoneUUID := d.Get("zone").(string)
 	name := d.Get("name").(string)
 	recordType := d.Get("type").(string)
@@ -77,8 +77,8 @@ func resourceZonerecordCreate(d *schema.ResourceData, m interface{}) error {
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	client := m.(*g.Gandi)
-	_, err := client.CreateZoneRecord(zoneUUID, name, recordType, ttl, values)
+	client := m.(*livedns.LiveDNS)
+	_, err := client.CreateDomainRecord(zoneUUID, name, recordType, ttl, values)
 	if err != nil {
 		return err
 	}
@@ -87,10 +87,10 @@ func resourceZonerecordCreate(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceZonerecordRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	zone, name, recordType, err := unmakeZonerecordID(d.Id())
-	record, err := client.GetZoneRecordWithNameAndType(zone, name, recordType)
+func resourceLiveDNSRecordRead(d *schema.ResourceData, m interface{}) error {
+	client := m.(*livedns.LiveDNS)
+	zone, name, recordType, err := explodeRecordID(d.Id())
+	record, err := client.GetDomainRecordWithNameAndType(zone, name, recordType)
 	if err != nil {
 		return err
 	}
@@ -103,9 +103,9 @@ func resourceZonerecordRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceZonerecordUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+func resourceLiveDNSRecordUpdate(d *schema.ResourceData, m interface{}) error {
+	client := m.(*livedns.LiveDNS)
+	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {
 		return err
@@ -117,19 +117,19 @@ func resourceZonerecordUpdate(d *schema.ResourceData, m interface{}) error {
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	_, err = client.ChangeZoneRecordWithNameAndType(zone, name, recordType, ttl, values)
+	_, err = client.ChangeDomainRecordWithNameAndType(zone, name, recordType, ttl, values)
 	return err
 }
 
-func resourceZonerecordDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*g.Gandi)
-	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+func resourceLiveDNSRecordDelete(d *schema.ResourceData, m interface{}) error {
+	client := m.(*livedns.LiveDNS)
+	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {
 		return err
 	}
 
-	err = client.DeleteZoneRecord(zone, name, recordType)
+	err = client.DeleteDomainRecord(zone, name, recordType)
 
 	if err != nil {
 		return err
@@ -139,15 +139,15 @@ func resourceZonerecordDelete(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceZonerecordExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*g.Gandi)
-	zone, name, recordType, err := unmakeZonerecordID(d.Id())
+func resourceLiveDNSRecordExists(d *schema.ResourceData, m interface{}) (bool, error) {
+	client := m.(*livedns.LiveDNS)
+	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {
 		return false, err
 	}
 
-	_, err = client.GetZoneRecordWithNameAndType(zone, name, recordType)
+	_, err = client.GetDomainRecordWithNameAndType(zone, name, recordType)
 	if err != nil {
 		if strings.Index(err.Error(), "404") == 0 {
 			return false, nil
