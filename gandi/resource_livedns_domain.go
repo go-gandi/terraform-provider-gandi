@@ -23,8 +23,8 @@ func resourceLiveDNSDomain() *schema.Resource {
 				Required: true,
 			},
 			"ttl": {
-					Type: schema.TypeInt,
-					Required: true,
+				Type:     schema.TypeInt,
+				Required: true,
 			},
 		},
 	}

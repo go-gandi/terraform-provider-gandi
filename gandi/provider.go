@@ -28,8 +28,8 @@ func Provider() *schema.Provider {
 			"gandi_livedns_domain": dataSourceLiveDNSDomain(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"gandi_livedns_domain":             resourceLiveDNSDomain(),
-			"gandi_livedns_record":       resourceLiveDNSRecord(),
+			"gandi_livedns_domain": resourceLiveDNSDomain(),
+			"gandi_livedns_record": resourceLiveDNSRecord(),
 		},
 		ConfigureFunc: getGandiClient,
 	}

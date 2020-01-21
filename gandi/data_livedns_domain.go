@@ -24,7 +24,7 @@ func dataSourceGandiLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) 
 	client := meta.(*livedns.LiveDNS)
 	name := d.Get("name").(string)
 	log.Printf("[INFO] Reading Gandi zone '%s'", name)
-	found,err := client.GetDomain(name)
+	found, err := client.GetDomain(name)
 	if err != nil {
 		return fmt.Errorf("Unknown domain with name : '%s'", name)
 	}
