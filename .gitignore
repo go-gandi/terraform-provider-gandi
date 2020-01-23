@@ -1,3 +1,4 @@
+.idea
 terraform-provider-gandi
 *.tf
 *.tfstate*
