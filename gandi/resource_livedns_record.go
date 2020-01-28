@@ -76,7 +76,7 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, m interface{}) error {
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	_, err := client.CreateDomainRecord(zoneUUID, name, recordType, ttl, values)
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSRecordRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	zone, name, recordType, err := explodeRecordID(d.Id())
 	record, err := client.GetDomainRecordWithNameAndType(zone, name, recordType)
 	if err != nil {
@@ -103,7 +103,7 @@ func resourceLiveDNSRecordRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSRecordUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {
@@ -121,7 +121,7 @@ func resourceLiveDNSRecordUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSRecordDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {
@@ -139,7 +139,7 @@ func resourceLiveDNSRecordDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSRecordExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	zone, name, recordType, err := explodeRecordID(d.Id())
 
 	if err != nil {

@@ -20,7 +20,7 @@ func dataSourceLiveDNSDomain() *schema.Resource {
 }
 
 func dataSourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*GandiClients).LiveDNS
+	client := meta.(*clients).LiveDNS
 	name := d.Get("name").(string)
 	log.Printf("[INFO] Reading Gandi zone '%s'", name)
 	found, err := client.GetDomain(name)

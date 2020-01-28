@@ -35,7 +35,7 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).Domain
+	client := m.(*clients).Domain
 	fqdn := d.Get("name").(string)
 	domain, err := client.GetDomain(fqdn)
 	if err != nil {
@@ -50,7 +50,7 @@ func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).Domain
+	client := m.(*clients).Domain
 	d.Partial(true)
 	if d.HasChange("autorenew") {
 		if err := client.SetAutoRenew(d.Get("name").(string), d.Get("autorenew").(bool)); err != nil {

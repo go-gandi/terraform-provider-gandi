@@ -37,7 +37,7 @@ func Provider() *schema.Provider {
 	}
 }
 
-type GandiClients struct {
+type clients struct {
 	Domain  *domain.Domain
 	LiveDNS *livedns.LiveDNS
 }
@@ -47,7 +47,7 @@ func getGandiClient(d *schema.ResourceData) (interface{}, error) {
 	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
 	domain := gandi.NewDomainClient(d.Get("key").(string), config)
 
-	return &GandiClients{
+	return &clients{
 		Domain:  domain,
 		LiveDNS: liveDNS,
 	}, nil

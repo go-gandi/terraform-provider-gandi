@@ -34,7 +34,7 @@ func resourceLiveDNSDomain() *schema.Resource {
 func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 	name := d.Get("name").(string)
 	ttl := d.Get("ttl").(int)
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	response, err := client.CreateDomain(name, ttl)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSDomainRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	zone, err := client.GetDomain(d.Id())
 	if err != nil {
 		return err
@@ -59,7 +59,7 @@ func resourceLiveDNSDomainDelete(d *schema.ResourceData, m interface{}) error {
 }
 
 func resourceLiveDNSDomainExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*GandiClients).LiveDNS
+	client := m.(*clients).LiveDNS
 	_, err := client.GetDomain(d.Id())
 	if err != nil {
 		if strings.Index(err.Error(), "404") == 0 {

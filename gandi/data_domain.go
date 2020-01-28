@@ -19,7 +19,7 @@ func dataSourceDomain() *schema.Resource {
 }
 
 func dataSourceDomainRead(d *schema.ResourceData, meta interface{}) error {
-	client := meta.(*GandiClients).Domain
+	client := meta.(*clients).Domain
 	name := d.Get("name").(string)
 	found, err := client.GetDomain(name)
 	if err != nil {
