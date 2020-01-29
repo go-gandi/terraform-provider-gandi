@@ -3,3 +3,4 @@ terraform-provider-gandi
 *.tf
 *.tfstate*
 .terraform
+crash.log

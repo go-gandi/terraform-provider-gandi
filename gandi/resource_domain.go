@@ -2,6 +2,7 @@ package gandi
 
 import (
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/tiramiseb/go-gandi/domain"
 )
 
 func resourceDomain() *schema.Resource {
@@ -24,13 +25,77 @@ func resourceDomain() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 			},
+			"admin":   contactSchema(),
+			"billing": contactSchema(),
+			"owner":   contactSchema(),
+			"tech":    contactSchema(),
+		},
+	}
+}
+
+func contactSchema() *schema.Schema {
+	return &schema.Schema{
+		Type:     schema.TypeSet,
+		Required: true,
+		Elem: &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"country": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validateCountryCode,
+				},
+				"email": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"family_name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"given_name": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"street_addr": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"type": {
+					Type:         schema.TypeString,
+					Required:     true,
+					ValidateFunc: validateContactType,
+				},
+			},
 		},
 	}
 }
 
 func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
+	client := m.(*clients).Domain
+
 	fqdn := d.Get("name").(string)
 	d.SetId(fqdn)
+	domain := domain.CreateRequest{FQDN: fqdn,
+		Admin:   expandContact(d.Get("admin")),
+		Billing: expandContact(d.Get("owner")),
+		Owner:   expandContact(d.Get("tech")),
+		Tech:    expandContact(d.Get("billing")),
+	}
+
+	if nameservers, ok := d.GetOk("nameservers"); ok {
+		domain.Nameservers = expandNameServers(nameservers.([]interface{}))
+	}
+
+	if err := client.CreateDomain(fqdn, domain); err != nil {
+		return err
+	}
+
+	if autorenew, ok := d.GetOk("autorenew"); ok {
+		if err := client.SetAutoRenew(fqdn, autorenew.(bool)); err != nil {
+			return err
+		}
+	}
+
 	return resourceDomainRead(d, m)
 }
 
@@ -46,12 +111,51 @@ func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("name", domain.FQDN)
 	d.Set("nameservers", domain.Nameservers)
 	d.Set("autorenew", domain.AutoRenew)
+	if domain.Contacts != nil {
+		if domain.Contacts.Owner != nil {
+			if err = d.Set("owner", flattenContact(domain.Contacts.Owner)); err != nil {
+				return err
+			}
+		}
+		if domain.Contacts.Admin != nil {
+			if err = d.Set("admin", flattenContact(domain.Contacts.Admin)); err != nil {
+				return err
+			}
+		}
+		if domain.Contacts.Billing != nil {
+			if err = d.Set("billing", flattenContact(domain.Contacts.Billing)); err != nil {
+				return err
+			}
+		}
+		if domain.Contacts.Tech != nil {
+			if err = d.Set("tech", flattenContact(domain.Contacts.Tech)); err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
 func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 	client := m.(*clients).Domain
 	d.Partial(true)
+
+	if d.HasChange("admin") || d.HasChange("owner") || d.HasChange("tech") || d.HasChange("billing") {
+		if err := client.SetContacts(d.Get("name").(string),
+			domain.Contacts{
+				Admin:   expandContact(d.Get("admin")),
+				Billing: expandContact(d.Get("owner")),
+				Owner:   expandContact(d.Get("tech")),
+				Tech:    expandContact(d.Get("billing")),
+			}); err != nil {
+			return err
+		}
+
+		d.SetPartial("admin")
+		d.SetPartial("owner")
+		d.SetPartial("tech")
+		d.SetPartial("billing")
+	}
 	if d.HasChange("autorenew") {
 		if err := client.SetAutoRenew(d.Get("name").(string), d.Get("autorenew").(bool)); err != nil {
 			return err
@@ -60,7 +164,7 @@ func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if d.HasChange("nameservers") {
-		ns := ensureNameServers(d.Get("nameservers").([]interface{}))
+		ns := expandNameServers(d.Get("nameservers").([]interface{}))
 		if err := client.UpdateNameServers(d.Get("name").(string), ns); err != nil {
 			return err
 		}
@@ -74,11 +178,4 @@ func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 func resourceDomainDelete(d *schema.ResourceData, m interface{}) error {
 	d.SetId("")
 	return nil
-}
-
-func ensureNameServers(ns []interface{}) (ret []string) {
-	for _, v := range ns {
-		ret = append(ret, v.(string))
-	}
-	return
 }
