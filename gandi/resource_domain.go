@@ -68,6 +68,22 @@ func contactSchema() *schema.Schema {
 					Required:     true,
 					ValidateFunc: validateContactType,
 				},
+				"phone": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"city": {
+					Type:     schema.TypeString,
+					Required: true,
+				},
+				"organisation": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
+				"zip": {
+					Type:     schema.TypeString,
+					Optional: true,
+				},
 			},
 		},
 	}

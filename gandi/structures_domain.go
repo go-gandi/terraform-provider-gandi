@@ -15,6 +15,10 @@ func flattenContact(in *domain.Contact) []interface{} {
 	m["family_name"] = in.FamilyName
 	m["given_name"] = in.GivenName
 	m["street_addr"] = in.StreetAddr
+	m["phone"] = in.Phone
+	m["city"] = in.City
+	m["organisation"] = in.OrgName
+	m["zip"] = in.Zip
 	m["type"] = flattenContactType(in.ContactType)
 
 	return []interface{}{m}
@@ -45,6 +49,10 @@ func expandContact(in interface{}) *domain.Contact {
 		FamilyName:  contact["family_name"].(string),
 		GivenName:   contact["given_name"].(string),
 		StreetAddr:  contact["street_addr"].(string),
+		Phone:       contact["phone"].(string),
+		City:        contact["city"].(string),
+		OrgName:     contact["organisation"].(string),
+		Zip:         contact["zip"].(string),
 		ContactType: expandContactType(contact["type"].(string)),
 	}
 	return &cnt
