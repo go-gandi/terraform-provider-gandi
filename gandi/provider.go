@@ -25,9 +25,9 @@ func Provider() *schema.Provider {
 				Description: "A Gandi Sharing ID",
 			},
 			"dry_run": &schema.Schema{
-					Type: schema.TypeBool,
-					Optional: true,
-					Description: "Prevent the Domain provider from taking certain actions",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Prevent the Domain provider from taking certain actions",
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -54,7 +54,6 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	config := gandi.Config{SharingID: d.Get("sharing_id").(string), DryRun: d.Get("dry_run").(bool)}
 	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
 	domain := gandi.NewDomainClient(d.Get("key").(string), config)
-
 
 	return &clients{
 		Domain:  domain,

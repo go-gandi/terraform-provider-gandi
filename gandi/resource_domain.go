@@ -11,6 +11,9 @@ func resourceDomain() *schema.Resource {
 		Read:   resourceDomainRead,
 		Update: resourceDomainUpdate,
 		Delete: resourceDomainDelete,
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -101,16 +104,16 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 
 func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*clients).Domain
-	fqdn := d.Get("name").(string)
+	fqdn := d.Id()
 	domain, err := client.GetDomain(fqdn)
 	if err != nil {
 		d.SetId("")
 		return err
 	}
-	d.SetId(domain.ID)
+	d.SetId(domain.FQDN)
 	d.Set("name", domain.FQDN)
 	d.Set("nameservers", domain.Nameservers)
-	d.Set("autorenew", domain.AutoRenew)
+	d.Set("autorenew", domain.AutoRenew.Enabled)
 	if domain.Contacts != nil {
 		if domain.Contacts.Owner != nil {
 			if err = d.Set("owner", flattenContact(domain.Contacts.Owner)); err != nil {
