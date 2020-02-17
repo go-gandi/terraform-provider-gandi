@@ -25,7 +25,8 @@ func dataSourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 	if err != nil {
 		return fmt.Errorf("Unknown domain with name: '#{name}'")
 	}
-	d.SetId(found.ID)
+	d.SetId(found.FQDN)
 	d.Set("name", found.FQDN)
+	d.Set("nameservers", found.Nameservers)
 	return nil
 }
