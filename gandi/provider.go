@@ -53,10 +53,10 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 
 	config := gandi.Config{SharingID: d.Get("sharing_id").(string), DryRun: d.Get("dry_run").(bool)}
 	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
-	domain := gandi.NewDomainClient(d.Get("key").(string), config)
+	domainClient := gandi.NewDomainClient(d.Get("key").(string), config)
 
 	return &clients{
-		Domain:  domain,
+		Domain:  domainClient,
 		LiveDNS: liveDNS,
 	}, nil
 }

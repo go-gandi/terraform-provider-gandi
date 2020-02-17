@@ -94,7 +94,7 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 
 	fqdn := d.Get("name").(string)
 	d.SetId(fqdn)
-	domain := domain.CreateRequest{FQDN: fqdn,
+	request := domain.CreateRequest{FQDN: fqdn,
 		Admin:   expandContact(d.Get("admin")),
 		Billing: expandContact(d.Get("owner")),
 		Owner:   expandContact(d.Get("tech")),
@@ -102,10 +102,10 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 	}
 
 	if nameservers, ok := d.GetOk("nameservers"); ok {
-		domain.Nameservers = expandNameServers(nameservers.([]interface{}))
+		request.Nameservers = expandNameServers(nameservers.([]interface{}))
 	}
 
-	if err := client.CreateDomain(fqdn, domain); err != nil {
+	if err := client.CreateDomain(fqdn, request); err != nil {
 		return err
 	}
 
@@ -121,33 +121,33 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 	client := m.(*clients).Domain
 	fqdn := d.Id()
-	domain, err := client.GetDomain(fqdn)
+	response, err := client.GetDomain(fqdn)
 	if err != nil {
 		d.SetId("")
 		return err
 	}
-	d.SetId(domain.FQDN)
-	d.Set("name", domain.FQDN)
-	d.Set("nameservers", domain.Nameservers)
-	d.Set("autorenew", domain.AutoRenew.Enabled)
-	if domain.Contacts != nil {
-		if domain.Contacts.Owner != nil {
-			if err = d.Set("owner", flattenContact(domain.Contacts.Owner)); err != nil {
+	d.SetId(response.FQDN)
+	d.Set("name", response.FQDN)
+	d.Set("nameservers", response.Nameservers)
+	d.Set("autorenew", response.AutoRenew.Enabled)
+	if response.Contacts != nil {
+		if response.Contacts.Owner != nil {
+			if err = d.Set("owner", flattenContact(response.Contacts.Owner)); err != nil {
 				return err
 			}
 		}
-		if domain.Contacts.Admin != nil {
-			if err = d.Set("admin", flattenContact(domain.Contacts.Admin)); err != nil {
+		if response.Contacts.Admin != nil {
+			if err = d.Set("admin", flattenContact(response.Contacts.Admin)); err != nil {
 				return err
 			}
 		}
-		if domain.Contacts.Billing != nil {
-			if err = d.Set("billing", flattenContact(domain.Contacts.Billing)); err != nil {
+		if response.Contacts.Billing != nil {
+			if err = d.Set("billing", flattenContact(response.Contacts.Billing)); err != nil {
 				return err
 			}
 		}
-		if domain.Contacts.Tech != nil {
-			if err = d.Set("tech", flattenContact(domain.Contacts.Tech)); err != nil {
+		if response.Contacts.Tech != nil {
+			if err = d.Set("tech", flattenContact(response.Contacts.Tech)); err != nil {
 				return err
 			}
 		}
@@ -194,7 +194,7 @@ func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 }
 
 // The Gandi API doesn't presently support deleting domains
-func resourceDomainDelete(d *schema.ResourceData, m interface{}) error {
+func resourceDomainDelete(d *schema.ResourceData, _ interface{}) error {
 	d.SetId("")
 	return nil
 }
