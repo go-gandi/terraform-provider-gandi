@@ -15,7 +15,7 @@ require (
 	github.com/hashicorp/yamux v0.0.0-20190923154419-df201c70410d // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
-	github.com/tiramiseb/go-gandi v0.0.0-20200115114438-265b30e0c55c
+	github.com/tiramiseb/go-gandi v0.0.0-20200128175142-df8b8e9d23a1
 	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20200108215511-5d647ca15757 // indirect
@@ -25,5 +25,3 @@ require (
 )
 
 go 1.13
-
-replace github.com/tiramiseb/go-gandi => ../go-gandi
