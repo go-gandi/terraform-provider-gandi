@@ -1,6 +1,9 @@
 package gandi
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"github.com/tiramiseb/go-gandi/domain"
 )
@@ -16,23 +19,27 @@ func resourceDomain() *schema.Resource {
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				Description: "The FQDN of the domain",
 			},
 			"nameservers": {
-				Type:     schema.TypeList,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Optional: true,
+				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+				Description: "A list of nameservers for the domain",
 			},
 			"autorenew": {
-				Type:     schema.TypeBool,
-				Optional: true,
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Should the domain autorenew",
 			},
 			"admin":   contactSchema(),
 			"billing": contactSchema(),
 			"owner":   contactSchema(),
 			"tech":    contactSchema(),
 		},
+		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
 }
 
@@ -46,51 +53,61 @@ func contactSchema() *schema.Schema {
 					Type:         schema.TypeString,
 					Required:     true,
 					ValidateFunc: validateCountryCode,
+					Description:  "The two letter country code for the contact",
 				},
 				"email": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Contact email address",
 				},
 				"family_name": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Family name of the contact",
 				},
 				"given_name": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Given name of the contact",
 				},
 				"street_addr": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Street Address of the contact",
 				},
 				"type": {
 					Type:         schema.TypeString,
 					Required:     true,
 					ValidateFunc: validateContactType,
+					Description:  "One of 'person', 'company', 'association', 'public body', or 'reseller'",
 				},
 				"phone": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Phone number for the contact",
 				},
 				"city": {
-					Type:     schema.TypeString,
-					Required: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "City for the contact",
 				},
 				"organisation": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The legal name of the organisation. Required for types other than person",
 				},
 				"zip": {
-					Type:     schema.TypeString,
-					Optional: true,
+					Type:        schema.TypeString,
+					Required:    true,
+					Description: "Postal Code/Zipcode of the contact",
 				},
 			},
 		},
 	}
 }
 
-func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).Domain
+func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).Domain
 
 	fqdn := d.Get("name").(string)
 	d.SetId(fqdn)
@@ -115,11 +132,11 @@ func resourceDomainCreate(d *schema.ResourceData, m interface{}) error {
 		}
 	}
 
-	return resourceDomainRead(d, m)
+	return resourceDomainRead(d, meta)
 }
 
-func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).Domain
+func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).Domain
 	fqdn := d.Id()
 	response, err := client.GetDomain(fqdn)
 	if err != nil {
@@ -128,7 +145,9 @@ func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 	}
 	d.SetId(response.FQDN)
 	d.Set("name", response.FQDN)
-	d.Set("nameservers", response.Nameservers)
+	if err = d.Set("nameservers", response.Nameservers); err != nil {
+		return fmt.Errorf("Failed to set nameservers for %s: %s", d.Id(), err)
+	}
 	d.Set("autorenew", response.AutoRenew.Enabled)
 	if response.Contacts != nil {
 		if response.Contacts.Owner != nil {
@@ -155,11 +174,10 @@ func resourceDomainRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).Domain
-	d.Partial(true)
+func resourceDomainUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).Domain
 
-	if d.HasChange("admin") || d.HasChange("owner") || d.HasChange("tech") || d.HasChange("billing") {
+	if d.HasChanges("admin", "owner", "tech", "billing") {
 		if err := client.SetContacts(d.Get("name").(string),
 			domain.Contacts{
 				Admin:   expandContact(d.Get("admin")),
@@ -170,16 +188,11 @@ func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 			return err
 		}
 
-		d.SetPartial("admin")
-		d.SetPartial("owner")
-		d.SetPartial("tech")
-		d.SetPartial("billing")
 	}
 	if d.HasChange("autorenew") {
 		if err := client.SetAutoRenew(d.Get("name").(string), d.Get("autorenew").(bool)); err != nil {
 			return err
 		}
-		d.SetPartial("autorenew")
 	}
 
 	if d.HasChange("nameservers") {
@@ -187,10 +200,8 @@ func resourceDomainUpdate(d *schema.ResourceData, m interface{}) error {
 		if err := client.UpdateNameServers(d.Get("name").(string), ns); err != nil {
 			return err
 		}
-		d.SetPartial("nameservers")
 	}
-	d.Partial(false)
-	return resourceDomainRead(d, m)
+	return resourceDomainRead(d, meta)
 }
 
 // The Gandi API doesn't presently support deleting domains
