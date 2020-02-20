@@ -146,28 +146,28 @@ func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(response.FQDN)
 	d.Set("name", response.FQDN)
 	if err = d.Set("nameservers", response.Nameservers); err != nil {
-		return fmt.Errorf("Failed to set nameservers for %s: %s", d.Id(), err)
+		return fmt.Errorf("Failed to set nameservers for %s: %w", d.Id(), err)
 	}
 	d.Set("autorenew", response.AutoRenew.Enabled)
 	if response.Contacts != nil {
 		if response.Contacts.Owner != nil {
 			if err = d.Set("owner", flattenContact(response.Contacts.Owner)); err != nil {
-				return err
+				return fmt.Errorf("Failed to set the owner for %s: %w", d.Id(), err)
 			}
 		}
 		if response.Contacts.Admin != nil {
 			if err = d.Set("admin", flattenContact(response.Contacts.Admin)); err != nil {
-				return err
+				return fmt.Errorf("Failed to set the admin for %s: %w", d.Id(), err)
 			}
 		}
 		if response.Contacts.Billing != nil {
 			if err = d.Set("billing", flattenContact(response.Contacts.Billing)); err != nil {
-				return err
+				return fmt.Errorf("Failed to set the billing contact for %s: %w", d.Id(), err)
 			}
 		}
 		if response.Contacts.Tech != nil {
 			if err = d.Set("tech", flattenContact(response.Contacts.Tech)); err != nil {
-				return err
+				return fmt.Errorf("Failed to set the tech contact for %s: %w", d.Id(), err)
 			}
 		}
 	}

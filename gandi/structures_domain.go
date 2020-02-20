@@ -19,25 +19,25 @@ func flattenContact(in *domain.Contact) []interface{} {
 	m["city"] = in.City
 	m["organisation"] = in.OrgName
 	m["zip"] = in.Zip
-	m["type"] = flattenContactType(in.ContactType)
+	m["type"] = flattenContactType[in.ContactType]
 
 	return []interface{}{m}
 }
 
-func flattenContactType(cnt int) (ret string) {
-	switch cnt {
-	case 0:
-		ret = "person"
-	case 1:
-		ret = "company"
-	case 2:
-		ret = "association"
-	case 3:
-		ret = "public body"
-	case 4:
-		ret = "reseller"
-	}
-	return
+var expandContactType = map[string]int{
+	"person": 0,
+	"company": 1,
+	"association": 2,
+	"public body": 3,
+	"reseller": 4,
+}
+
+var flattenContactType = []string{
+	"person",
+	"company",
+	"association",
+	"public body",
+	"reseller",
 }
 
 func expandContact(in interface{}) *domain.Contact {
@@ -53,25 +53,9 @@ func expandContact(in interface{}) *domain.Contact {
 		City:        contact["city"].(string),
 		OrgName:     contact["organisation"].(string),
 		Zip:         contact["zip"].(string),
-		ContactType: expandContactType(contact["type"].(string)),
+		ContactType: expandContactType[contact["type"].(string)],
 	}
 	return &cnt
-}
-
-func expandContactType(cnt string) (ret int) {
-	switch cnt {
-	case "person":
-		ret = 0
-	case "company":
-		ret = 1
-	case "association":
-		ret = 2
-	case "public body":
-		ret = 3
-	case "reseller":
-		ret = 4
-	}
-	return
 }
 
 func expandNameServers(ns []interface{}) (ret []string) {

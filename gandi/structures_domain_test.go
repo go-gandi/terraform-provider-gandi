@@ -54,15 +54,15 @@ func TestValidateCountryCode(t *testing.T) {
 func TestRoundTripContactType(t *testing.T) {
 	types := []string{"person", "company", "association", "public body", "reseller"}
 	for _, v := range types {
-		i := expandContactType(v)
-		ret := flattenContactType(i)
+		i := expandContactType[v]
+		ret := flattenContactType[i]
 		if ret != v {
 			t.Errorf("Contact Type '%s' failed to roundtrip. Finalized as '%s'", v, ret)
 		}
 	}
 	for i := 0; i < 5; i++ {
-		val := flattenContactType(i)
-		ret := expandContactType(val)
+		val := flattenContactType[i]
+		ret := expandContactType[val]
 		if ret != i {
 			t.Errorf("Contact val %d failed to roundtrip. Finalized as %d", i, ret)
 		}
@@ -87,6 +87,10 @@ func TestFlattenContact(t *testing.T) {
 					FamilyName:  "User",
 					GivenName:   "Test",
 					StreetAddr:  "1 Uncanny Valley",
+					OrgName: "Test Org",
+					Phone: "+1.2123333444",
+					City: "Libreville",
+					Zip: "12345",
 				}},
 			want: map[string]interface{}{
 				"country":     "GB",
@@ -95,6 +99,10 @@ func TestFlattenContact(t *testing.T) {
 				"given_name":  "Test",
 				"street_addr": "1 Uncanny Valley",
 				"type":        "company",
+				"organisation": "Test Org",
+				"phone": "+1.2123333444",
+				"city": "Libreville",
+				"zip": "12345",
 			},
 		},
 	}
@@ -116,6 +124,10 @@ func TestExpandContact(t *testing.T) {
 		FamilyName:  "User",
 		GivenName:   "Test",
 		StreetAddr:  "1 Uncanny Valley",
+		OrgName: "Test Org",
+		Phone: "+1.2123333444",
+		City: "Libreville",
+		Zip: "12345",
 	}
 
 	s := contactSchema()
@@ -128,6 +140,10 @@ func TestExpandContact(t *testing.T) {
 		"given_name":  "Test",
 		"street_addr": "1 Uncanny Valley",
 		"type":        "company",
+		"organisation": "Test Org",
+		"phone": "+1.2123333444",
+		"city": "Libreville",
+		"zip": "12345",
 	})
 
 	if got := expandContact(contact); !reflect.DeepEqual(got, want) {
