@@ -1,8 +1,11 @@
 package gandi
 
 import (
+	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	g "github.com/tiramiseb/go-gandi-livedns"
+	"github.com/tiramiseb/go-gandi"
+	"github.com/tiramiseb/go-gandi/domain"
+	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 // Provider is the provider itself
@@ -13,28 +16,47 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_KEY", nil),
-				Description: "A Gandi LiveDNS API key",
+				Description: "A Gandi API key",
 			},
 			"sharing_id": &schema.Schema{
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_SHARING_ID", nil),
-				Description: "A Gandi LiveDNS sharing_id",
+				Description: "A Gandi Sharing ID",
+			},
+			"dry_run": &schema.Schema{
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Description: "Prevent the Domain provider from taking certain actions",
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"gandi_zone": dataSourceZone(),
+			"gandi_livedns_domain": dataSourceLiveDNSDomain(),
+			"gandi_domain":         dataSourceDomain(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"gandi_zone":             resourceZone(),
-			"gandi_zonerecord":       resourceZonerecord(),
-			"gandi_domainattachment": resourceDomainattachment(),
+			"gandi_livedns_domain": resourceLiveDNSDomain(),
+			"gandi_livedns_record": resourceLiveDNSRecord(),
+			"gandi_domain":         resourceDomain(),
 		},
-		ConfigureFunc: getGandiClient,
+		ConfigureFunc: getGandiClients,
 	}
 }
 
-func getGandiClient(d *schema.ResourceData) (interface{}, error) {
-	gandiClient := g.New(d.Get("key").(string), d.Get("sharing_id").(string))
-	return gandiClient, nil
+type clients struct {
+	Domain  *domain.Domain
+	LiveDNS *livedns.LiveDNS
+}
+
+func getGandiClients(d *schema.ResourceData) (interface{}, error) {
+	logging.SetOutput()
+
+	config := gandi.Config{SharingID: d.Get("sharing_id").(string), DryRun: d.Get("dry_run").(bool)}
+	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
+	domainClient := gandi.NewDomainClient(d.Get("key").(string), config)
+
+	return &clients{
+		Domain:  domainClient,
+		LiveDNS: liveDNS,
+	}, nil
 }
