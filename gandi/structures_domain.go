@@ -25,11 +25,11 @@ func flattenContact(in *domain.Contact) []interface{} {
 }
 
 var expandContactType = map[string]int{
-	"person": 0,
-	"company": 1,
+	"person":      0,
+	"company":     1,
 	"association": 2,
 	"public body": 3,
-	"reseller": 4,
+	"reseller":    4,
 }
 
 var flattenContactType = []string{
