@@ -31,7 +31,7 @@ jobs:
     - name: Lint
       uses: sjkaliski/go-github-actions/lint@v0.5.0
       env:
-        GO_LINT_PATH: "./gandi/..."
+        GO_LINT_PATHS: "./gandi/..."
       
     - name: TF Provider Lint
       uses: bflad/tfproviderlint-github-action@master
