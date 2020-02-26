@@ -14,6 +14,7 @@ func dataSourceLiveDNSDomain() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
+				Description: "The FQDN of the domain",
 			},
 		},
 	}
