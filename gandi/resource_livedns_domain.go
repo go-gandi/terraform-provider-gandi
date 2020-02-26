@@ -1,7 +1,7 @@
 package gandi
 
 import (
-	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -11,30 +11,32 @@ func resourceLiveDNSDomain() *schema.Resource {
 		Create: resourceLiveDNSDomainCreate,
 		Read:   resourceLiveDNSDomainRead,
 		Delete: resourceLiveDNSDomainDelete,
-		Exists: resourceLiveDNSDomainExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The FQDN of the domain",
 			},
 			"ttl": {
-				Type:     schema.TypeInt,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeInt,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The default TTL of the domain",
 			},
 		},
+		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
 }
 
-func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
+func resourceLiveDNSDomainCreate(d *schema.ResourceData, meta interface{}) error {
 	name := d.Get("name").(string)
 	ttl := d.Get("ttl").(int)
-	client := m.(*clients).LiveDNS
+	client := meta.(*clients).LiveDNS
 	response, err := client.CreateDomain(name, ttl)
 	if err != nil {
 		return err
@@ -43,8 +45,8 @@ func resourceLiveDNSDomainCreate(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceLiveDNSDomainRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).LiveDNS
+func resourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).LiveDNS
 	zone, err := client.GetDomain(d.Id())
 	if err != nil {
 		return err
@@ -53,19 +55,7 @@ func resourceLiveDNSDomainRead(d *schema.ResourceData, m interface{}) error {
 	return nil
 }
 
-func resourceLiveDNSDomainDelete(d *schema.ResourceData, m interface{}) error {
+func resourceLiveDNSDomainDelete(d *schema.ResourceData, meta interface{}) error {
 	d.SetId("")
 	return nil
-}
-
-func resourceLiveDNSDomainExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*clients).LiveDNS
-	_, err := client.GetDomain(d.Id())
-	if err != nil {
-		if strings.Index(err.Error(), "404") == 0 {
-			return false, nil
-		}
-		return false, err
-	}
-	return true, nil
 }
