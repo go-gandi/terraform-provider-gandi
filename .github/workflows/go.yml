@@ -31,4 +31,5 @@ jobs:
       
     - name: TF Provider Lint
       uses: bflad/tfproviderlint-github-action@master
-      args: ./...
+      with:
+        args: "./..."
