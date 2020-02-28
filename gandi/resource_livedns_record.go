@@ -85,7 +85,7 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, meta interface{}) error
 	}
 	calculatedID := fmt.Sprintf("%s/%s/%s", zoneUUID, name, recordType)
 	d.SetId(calculatedID)
-	return nil
+	return resourceLiveDNSRecordRead(d, meta)
 }
 
 func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
@@ -121,7 +121,7 @@ func resourceLiveDNSRecordUpdate(d *schema.ResourceData, meta interface{}) error
 		values = append(values, v.(string))
 	}
 	_, err = client.UpdateDomainRecordByNameAndType(zone, name, recordType, ttl, values)
-	return err
+	return resourceLiveDNSRecordRead(d, meta)
 }
 
 func resourceLiveDNSRecordDelete(d *schema.ResourceData, meta interface{}) error {
