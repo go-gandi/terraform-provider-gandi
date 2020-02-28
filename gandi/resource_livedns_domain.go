@@ -53,7 +53,7 @@ func resourceLiveDNSDomainCreate(d *schema.ResourceData, meta interface{}) error
 	if autosnap, ok := d.GetOk("automatic_snapshots"); ok {
 		a := autosnap.(bool)
 		if _, err := client.UpdateDomain(name, livedns.UpdateDomainRequest{AutomaticSnapshots: &a}); err != nil {
-			return fmt.Errorf("Failed to enable automatic snapshots for %s: %w", d.SetId, err)
+			return fmt.Errorf("Failed to enable automatic snapshots for %s: %w", name, err)
 		}
 	}
 	return resourceLiveDNSDomainRead(d, meta)
