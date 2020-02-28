@@ -21,32 +21,32 @@ func resourceLiveDNSRecord() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"zone": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 				Description: "The FQDN of the domain",
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 				Description: "The name of the record",
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
 				Description: "The type of the record",
 			},
 			"ttl": {
-				Type:     schema.TypeInt,
-				Required: true,
+				Type:        schema.TypeInt,
+				Required:    true,
 				Description: "The TTL of the record",
 			},
 			"values": {
-				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Required: true,
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Required:    true,
 				Description: "A list of values of the record",
 			},
 		},
@@ -91,7 +91,7 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, meta interface{}) error
 func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients).LiveDNS
 	zone, name, recordType, err := expandRecordID(d.Id())
-	record, err := client.GetDomainRecordWithNameAndType(zone, name, recordType)
+	record, err := client.GetDomainRecordByNameAndType(zone, name, recordType)
 	if err != nil {
 		return err
 	}
@@ -120,7 +120,7 @@ func resourceLiveDNSRecordUpdate(d *schema.ResourceData, meta interface{}) error
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	_, err = client.ChangeDomainRecordWithNameAndType(zone, name, recordType, ttl, values)
+	_, err = client.UpdateDomainRecordByNameAndType(zone, name, recordType, ttl, values)
 	return err
 }
 

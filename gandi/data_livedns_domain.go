@@ -12,8 +12,8 @@ func dataSourceLiveDNSDomain() *schema.Resource {
 		Read: dataSourceLiveDNSDomainRead,
 		Schema: map[string]*schema.Schema{
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 				Description: "The FQDN of the domain",
 			},
 		},
@@ -28,7 +28,7 @@ func dataSourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error
 	if err != nil {
 		return fmt.Errorf("Unknown domain '%s': %w", name, err)
 	}
-	d.SetId(found.ZoneUUID)
+	d.SetId(found.FQDN)
 	d.Set("name", found.FQDN)
 	return nil
 }

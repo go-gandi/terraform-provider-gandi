@@ -257,8 +257,8 @@ github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJyk=
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
-github.com/tiramiseb/go-gandi v0.0.0-20200128175142-df8b8e9d23a1 h1:FOkGM6K21IiXFnX1UQ47yPa+awSeszBevK63k70Zggo=
-github.com/tiramiseb/go-gandi v0.0.0-20200128175142-df8b8e9d23a1/go.mod h1:wevS0bE43PMSmEldbtya+tp+Ow180ftEPix8Onwh+E4=
+github.com/tiramiseb/go-gandi v0.0.0-20200227122905-7601fc3acbaa h1:V0cb7c74KYakwwROlFGVlqEz3V7AW2JnIpSP6zSMdPg=
+github.com/tiramiseb/go-gandi v0.0.0-20200227122905-7601fc3acbaa/go.mod h1:wevS0bE43PMSmEldbtya+tp+Ow180ftEPix8Onwh+E4=
 github.com/ulikunitz/xz v0.5.5 h1:pFrO0lVpTBXLpYw+pnLj6TbvHuyjXMfjGeCwSqCVwok=
 github.com/ulikunitz/xz v0.5.5/go.mod h1:2bypXElzHzzJZwzH67Y6wb67pO62Rzfn7BSiF4ABRW8=
 github.com/ulikunitz/xz v0.5.6 h1:jGHAfXawEGZQ3blwU5wnWKQJvAraT7Ftq9EXjnXYgt8=
