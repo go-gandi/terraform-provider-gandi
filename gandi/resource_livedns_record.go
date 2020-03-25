@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -14,45 +15,46 @@ func resourceLiveDNSRecord() *schema.Resource {
 		Read:   resourceLiveDNSRecordRead,
 		Update: resourceLiveDNSRecordUpdate,
 		Delete: resourceLiveDNSRecordDelete,
-		Exists: resourceLiveDNSRecordExists,
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
 			"zone": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The FQDN of the domain",
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The name of the record",
 			},
 			"type": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "The type of the record",
 			},
 			"ttl": {
-				Type:     schema.TypeInt,
-				Required: true,
+				Type:        schema.TypeInt,
+				Required:    true,
+				Description: "The TTL of the record",
 			},
 			"values": {
-				Type:     schema.TypeSet,
-				Elem:     &schema.Schema{Type: schema.TypeString},
-				Required: true,
+				Type:        schema.TypeSet,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Required:    true,
+				Description: "A list of values of the record",
 			},
 		},
+		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
 }
 
-func makeRecordID(zone, name, recordType string) string {
-	return fmt.Sprintf("%s/%s/%s", zone, name, recordType)
-}
-
-func explodeRecordID(id string) (zone, name, recordType string, err error) {
+func expandRecordID(id string) (zone, name, recordType string, err error) {
 	splitID := strings.Split(id, "/")
 
 	if len(splitID) != 3 {
@@ -66,7 +68,7 @@ func explodeRecordID(id string) (zone, name, recordType string, err error) {
 	return
 }
 
-func resourceLiveDNSRecordCreate(d *schema.ResourceData, m interface{}) error {
+func resourceLiveDNSRecordCreate(d *schema.ResourceData, meta interface{}) error {
 	zoneUUID := d.Get("zone").(string)
 	name := d.Get("name").(string)
 	recordType := d.Get("type").(string)
@@ -76,20 +78,20 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, m interface{}) error {
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	client := m.(*clients).LiveDNS
+	client := meta.(*clients).LiveDNS
 	_, err := client.CreateDomainRecord(zoneUUID, name, recordType, ttl, values)
 	if err != nil {
 		return err
 	}
 	calculatedID := fmt.Sprintf("%s/%s/%s", zoneUUID, name, recordType)
 	d.SetId(calculatedID)
-	return nil
+	return resourceLiveDNSRecordRead(d, meta)
 }
 
-func resourceLiveDNSRecordRead(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).LiveDNS
-	zone, name, recordType, err := explodeRecordID(d.Id())
-	record, err := client.GetDomainRecordWithNameAndType(zone, name, recordType)
+func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).LiveDNS
+	zone, name, recordType, err := expandRecordID(d.Id())
+	record, err := client.GetDomainRecordByNameAndType(zone, name, recordType)
 	if err != nil {
 		return err
 	}
@@ -98,13 +100,15 @@ func resourceLiveDNSRecordRead(d *schema.ResourceData, m interface{}) error {
 	d.Set("type", record.RrsetType)
 	d.Set("ttl", record.RrsetTTL)
 	d.Set("href", record.RrsetHref)
-	d.Set("values", record.RrsetValues)
+	if err = d.Set("values", record.RrsetValues); err != nil {
+		return fmt.Errorf("Failed to set the values for %s: %w", d.Id(), err)
+	}
 	return nil
 }
 
-func resourceLiveDNSRecordUpdate(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).LiveDNS
-	zone, name, recordType, err := explodeRecordID(d.Id())
+func resourceLiveDNSRecordUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).LiveDNS
+	zone, name, recordType, err := expandRecordID(d.Id())
 
 	if err != nil {
 		return err
@@ -116,13 +120,13 @@ func resourceLiveDNSRecordUpdate(d *schema.ResourceData, m interface{}) error {
 	for _, v := range valuesList {
 		values = append(values, v.(string))
 	}
-	_, err = client.ChangeDomainRecordWithNameAndType(zone, name, recordType, ttl, values)
-	return err
+	_, err = client.UpdateDomainRecordByNameAndType(zone, name, recordType, ttl, values)
+	return resourceLiveDNSRecordRead(d, meta)
 }
 
-func resourceLiveDNSRecordDelete(d *schema.ResourceData, m interface{}) error {
-	client := m.(*clients).LiveDNS
-	zone, name, recordType, err := explodeRecordID(d.Id())
+func resourceLiveDNSRecordDelete(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*clients).LiveDNS
+	zone, name, recordType, err := expandRecordID(d.Id())
 
 	if err != nil {
 		return err
@@ -136,22 +140,4 @@ func resourceLiveDNSRecordDelete(d *schema.ResourceData, m interface{}) error {
 
 	d.SetId("")
 	return nil
-}
-
-func resourceLiveDNSRecordExists(d *schema.ResourceData, m interface{}) (bool, error) {
-	client := m.(*clients).LiveDNS
-	zone, name, recordType, err := explodeRecordID(d.Id())
-
-	if err != nil {
-		return false, err
-	}
-
-	_, err = client.GetDomainRecordWithNameAndType(zone, name, recordType)
-	if err != nil {
-		if strings.Index(err.Error(), "404") == 0 {
-			return false, nil
-		}
-		return false, err
-	}
-	return true, nil
 }

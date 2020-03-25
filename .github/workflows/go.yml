@@ -25,10 +25,16 @@ jobs:
   
     - name: Format
       uses: sjkaliski/go-github-actions/fmt@v0.5.0
+      env:
+        GO_IGNORE_DIRS: "./vendor"
     
     - name: Lint
       uses: sjkaliski/go-github-actions/lint@v0.5.0
+      env:
+        GO_LINT_PATHS: "./gandi/..."
       
-    - name: TF Provider Lint
-      uses: bflad/tfproviderlint-github-action@master
-      args: ./...
+# Disable the TF Provider Lint action until https://github.com/bflad/tfproviderlint-github-action/pull/1 is fixed
+    # - name: TF Provider Lint
+    #   uses: bflad/tfproviderlint-github-action@master
+    #   with:
+    #     args: "./..."

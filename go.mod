@@ -15,7 +15,7 @@ require (
 	github.com/hashicorp/yamux v0.0.0-20190923154419-df201c70410d // indirect
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/posener/complete v1.2.3 // indirect
-	github.com/tiramiseb/go-gandi v0.0.0-20200128175142-df8b8e9d23a1
+	github.com/tiramiseb/go-gandi v0.0.0-20200227122905-7601fc3acbaa
 	github.com/ulikunitz/xz v0.5.6 // indirect
 	github.com/vmihailenco/msgpack v4.0.4+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20200108215511-5d647ca15757 // indirect
