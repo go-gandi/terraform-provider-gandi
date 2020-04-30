@@ -113,9 +113,9 @@ func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(fqdn)
 	request := domain.CreateRequest{FQDN: fqdn,
 		Admin:   expandContact(d.Get("admin")),
-		Billing: expandContact(d.Get("owner")),
-		Owner:   expandContact(d.Get("tech")),
-		Tech:    expandContact(d.Get("billing")),
+		Billing: expandContact(d.Get("billing")),
+		Owner:   expandContact(d.Get("owner")),
+		Tech:    expandContact(d.Get("tech")),
 	}
 
 	if nameservers, ok := d.GetOk("nameservers"); ok {
@@ -181,9 +181,9 @@ func resourceDomainUpdate(d *schema.ResourceData, meta interface{}) error {
 		if err := client.SetContacts(d.Get("name").(string),
 			domain.Contacts{
 				Admin:   expandContact(d.Get("admin")),
-				Billing: expandContact(d.Get("owner")),
-				Owner:   expandContact(d.Get("tech")),
-				Tech:    expandContact(d.Get("billing")),
+				Billing: expandContact(d.Get("billing")),
+				Owner:   expandContact(d.Get("owner")),
+				Tech:    expandContact(d.Get("tech")),
 			}); err != nil {
 			return err
 		}
