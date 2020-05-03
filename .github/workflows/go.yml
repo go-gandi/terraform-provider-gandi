@@ -1,5 +1,5 @@
 name: Go
-on: [pull_request]
+on: [push, pull_request]
 jobs:
   build:
     name: Checks & Build
@@ -12,7 +12,7 @@ jobs:
       id: go
 
     - name: Check out code into the Go module directory
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
 
     - name: Format
       uses: sjkaliski/go-github-actions/fmt@v0.5.0
@@ -24,12 +24,39 @@ jobs:
       env:
         GO_LINT_PATHS: "./gandi/..."
 
-    - name: Build
-      run: |
-        make
-
-# Disable the TF Provider Lint action until https://github.com/bflad/tfproviderlint-github-action/pull/1 is fixed
+    # Disable the TF Provider Lint action until https://github.com/bflad/tfproviderlint-github-action/pull/1 is fixed
     # - name: TF Provider Lint
     #   uses: bflad/tfproviderlint-github-action@master
     #   with:
     #     args: "./..."
+
+    - name: Build
+      run: |
+        make
+        go_version=$(go version)
+        os_arch=${go_version##*\ }
+        mv terraform-provider-gandi terraform-provider-gandi-${os_arch%%\/*}_${os_arch##*\/}
+        ls -la terraform-provider-gandi*
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: build-artifact
+        path: terraform-provider-gandi*
+  deploy:
+    name: Push artifact to Github release
+    if: github.event_name == 'push' && contains(github.ref, 'tags')
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Download build artifact
+      uses: actions/download-artifact@v1
+      with:
+        name: build-artifact
+    - name: Upload binaries to github release
+      uses: svenstaro/upload-release-action@v1-release
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        file: build-artifact/terraform-provider-gandi*
+        tag: ${{ github.ref }}
+        overwrite: true
+        file_glob: true
