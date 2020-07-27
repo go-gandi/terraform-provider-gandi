@@ -2,8 +2,12 @@ TEST?=$$(go list ./... |grep -v 'vendor')
 GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=gandi
+GO_PLATFORM=$(subst /, ,$(word 4, $(shell go version)))
 
 default: build
+
+cibuild: vet fmt build
+	mv terraform-provider-gandi terraform-provider-gandi-$(word 1, $(GO_PLATFORM))_$(word 2, $(GO_PLATFORM))
 
 build: fmtcheck
 	go build -o terraform-provider-gandi

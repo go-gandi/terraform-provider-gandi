@@ -1,5 +1,5 @@
 .idea
-terraform-provider-gandi
+terraform-provider-gandi*
 *.tf
 *.tfstate*
 .terraform
