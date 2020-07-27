@@ -46,7 +46,7 @@ jobs:
 #      with:
 #        args: "./..."
 
-    - uses: actions/upload-artifact/v2
+    - uses: actions/upload-artifact@v2
       name: Upload
       with:
         name: build-artifact
