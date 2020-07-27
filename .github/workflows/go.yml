@@ -42,7 +42,8 @@ jobs:
       if: runner.os == 'Linux'
       env:
         GO_LINT_PATHS: "./gandi/..."
-      
+
+# This still does something weird, comment out for now
 #    - name: TF Provider Lint
 #      uses: bflad/tfproviderlint-github-action@master
 #      if: runner.os == 'Linux'
