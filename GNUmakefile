@@ -6,7 +6,7 @@ GO_PLATFORM=$(subst /, ,$(word 4, $(shell go version)))
 
 default: build
 
-cibuild: vet fmt build
+cibuild: vet build
 	mv terraform-provider-gandi terraform-provider-gandi-$(word 1, $(GO_PLATFORM))_$(word 2, $(GO_PLATFORM))
 
 build: fmtcheck
