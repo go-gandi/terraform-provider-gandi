@@ -58,7 +58,7 @@ jobs:
     needs: build
     steps:
     - name: Download built artifact
-      uses: actions/download-artifact/v1
+      uses: actions/download-artifact@v1
       with:
         name: build-artifact
     - name: Upload binaries to release
