@@ -33,16 +33,19 @@ jobs:
   
     - name: Format
       uses: sjkaliski/go-github-actions/fmt@v1.0.0
+      if: runner.os == 'Linux'
       env:
         GO_IGNORE_DIRS: "./vendor"
     
     - name: Lint
       uses: sjkaliski/go-github-actions/lint@v1.0.0
+      if: runner.os == 'Linux'
       env:
         GO_LINT_PATHS: "./gandi/..."
       
 #    - name: TF Provider Lint
 #      uses: bflad/tfproviderlint-github-action@master
+#      if: runner.os == 'Linux'
 #      with:
 #        args: "./..."
 
