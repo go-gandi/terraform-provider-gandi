@@ -1,22 +1,20 @@
 # Terraform Gandi Provider
 
-This provider allows managing DNS records on the Gandi LiveDNS service.
+This provider supports [managing DNS zones](https://api.gandi.net/docs/domains/) and [managing the LiveDNS service](https://api.gandi.net/docs/livedns/) in Gandi.
 
-https://doc.livedns.gandi.net/
+This provider currently doesn't support the Email, Organization or Billing APIs. We welcome pull requests to implement more functionality!
 
-This provider doesn't provide access to the other Gandi API (https://doc.rpc.gandi.net/); if you want to contribute, don't hesitate!
-
-## Compiling
+## Installation
 
 ```
 make
+mkdir -p ~/.terraform.d/plugins/
+install -m 644 terraform-provider-gandi ~/.terraform.d/plugins/
 ```
 
-or 
+Once installed, run `terraform init` to enable the Gandi plugin in your terraform environment.
 
-```
-go build -o terraform-provider-gandi
-```
+See the [Hashicorp Terraform documentation](https://www.terraform.io/docs/plugins/basics.html#installing-plugins) for further details.
 
 ## Example
 
@@ -29,23 +27,23 @@ provider "gandi" {
   sharing_id = "<the sharing_id>"
 }
 
-resource "gandi_zone" "example_com" {
-  name = "example.com Zone"
+resource "gandi_domain" "example_com" {
+  name = "example.com"
+  nameservers = gandi_livedns_domain.example_com.nameservers
 }
 
-resource "gandi_zonerecord" "www" {
-  zone = "${gandi_zone.example_com.id}"
+resource "gandi_livedns_domain" "example_com" {
+  name = "example.com"
+}
+
+resource "gandi_livedns_record" "www_example_com" {
+  zone = "${gandi_livedns_domain.example_com.id}"
   name = "www"
   type = "A"
   ttl = 3600
   values = [
     "192.168.0.1"
   ]
-}
-
-resource "gandi_domainattachment" "example_com" {
-    domain = "example.com"
-    zone = "${gandi_zone.example_com.id}"
 }
 ```
 
@@ -61,7 +59,7 @@ provider "gandi" {
   sharing_id = "<the sharing_id>"
 }
 
-data "gandi_zone" "example_com" {
+data "gandi_domain" "example_com" {
   name = "example.com"
 }
 
@@ -74,14 +72,9 @@ resource "gandi_zonerecord" "www" {
     "192.168.0.1"
   ]
 }
-
-resource "gandi_domainattachment" "example_com" {
-  domain = "example.com"
-  zone   = "${data.gandi_zone.example_com.id}"
-}
 ```
 
-## Licensing and stuff
+## Licensing
 
 This provider is distributed under the terms of the Mozilla Public License version 2.0. See the `LICENSE` file.
 
