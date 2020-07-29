@@ -55,22 +55,3 @@ jobs:
       with:
         name: build-artifact
         path: ${{ matrix.asset_name }}
-  deploy:
-    name: Push artifact as GitHub release
-    if: github.event.name == 'push' && contains(github.ref, 'tags')
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - name: Download built artifact
-      uses: actions/download-artifact@v1
-      with:
-        name: build-artifact
-    - name: Upload binaries to release
-      uses: svenstaro/upload-release-action@v2
-      with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: build-artifact/terraform-provider-gandi*
-        tag: ${{ github.ref }}
-        overwrite: true
-        file_glob: true
-
