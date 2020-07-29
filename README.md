@@ -63,7 +63,7 @@ data "gandi_domain" "example_com" {
   name = "example.com"
 }
 
-resource "gandi_zonerecord" "www" {
+resource "gandi_livedns_record" "www" {
   zone = "${data.gandi_domain.example_com.id}"
   name = "www"
   type = "A"
