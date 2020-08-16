@@ -28,8 +28,5 @@ func dataSourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 	}
 	d.SetId(found.FQDN)
 	d.Set("name", found.FQDN)
-	if err = d.Set("nameservers", found.Nameservers); err != nil {
-		return fmt.Errorf("Failed to set nameservers for %s: %w", d.Id(), err)
-	}
 	return nil
 }
