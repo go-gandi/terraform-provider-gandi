@@ -3,11 +3,13 @@ GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
 WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=gandi
 GO_PLATFORM=$(subst /, ,$(word 4, $(shell go version)))
+TF_PLATFORM=$(word 1, $(GO_PLATFORM))_$(word 2, $(GO_PLATFORM))
+VERSION=2.0.0
 
 default: fmtcheck build
 
 cibuild: vet build
-	mv terraform-provider-gandi terraform-provider-gandi-$(word 1, $(GO_PLATFORM))_$(word 2, $(GO_PLATFORM))
+	mv terraform-provider-gandi terraform-provider-gandi-$(TF_PLATFORM)
 
 build:
 	go build -o terraform-provider-gandi
@@ -48,6 +50,10 @@ test-compile:
 		exit 1; \
 	fi
 	go test -c $(TEST) $(TESTARGS)
+
+install: default
+	@install -d $(HOME)/.terraform.d/plugins/github/tiramiseb/gandi/$(VERSION)/$(TF_PLATFORM)
+	@install -m 755 terraform-provider-gandi $(HOME)/.terraform.d/plugins/github/tiramiseb/gandi/$(VERSION)/$(TF_PLATFORM)/
 
 website:
 ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))

@@ -8,8 +8,7 @@ This provider currently doesn't support the Email, Organization or Billing APIs.
 
 ```
 make
-mkdir -p ~/.terraform.d/plugins/
-install -m 644 terraform-provider-gandi ~/.terraform.d/plugins/
+make install
 ```
 
 Once installed, run `terraform init` to enable the Gandi plugin in your terraform environment.
@@ -22,6 +21,15 @@ This example partly mimics the steps of [the official LiveDNS documentation exam
 Note: sharing_id is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization). 
 
 ```
+terraform {
+  required_providers {
+    gandi = {
+      versions = ["2.0.0"]
+      source   = "github/tiramiseb/gandi"
+    }
+  }
+}
+
 provider "gandi" {
   key = "<the API key>"
   sharing_id = "<the sharing_id>"
@@ -54,6 +62,15 @@ This example sums up the available resources.
 If your zone already exists (which is very likely), you may use it as a data source:
 
 ```
+terraform {
+  required_providers {
+    gandi = {
+      versions = ["2.0.0"]
+      source   = "github/tiramiseb/gandi"
+    }
+  }
+}
+
 provider "gandi" {
   key = "<the API key>"
   sharing_id = "<the sharing_id>"

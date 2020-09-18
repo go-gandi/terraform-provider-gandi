@@ -14,6 +14,12 @@ func dataSourceDomain() *schema.Resource {
 				Required:    true,
 				Description: "The FQDN of the domain",
 			},
+			"nameservers": {
+				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+				Description: "A list of nameservers for the domain",
+			},
 		},
 		Read: dataSourceDomainRead,
 	}
