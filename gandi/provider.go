@@ -1,11 +1,11 @@
 package gandi
 
 import (
+	"github.com/go-gandi/go-gandi"
+	"github.com/go-gandi/go-gandi/domain"
+	"github.com/go-gandi/go-gandi/livedns"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/tiramiseb/go-gandi"
-	"github.com/tiramiseb/go-gandi/domain"
-	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 // Provider is the provider itself

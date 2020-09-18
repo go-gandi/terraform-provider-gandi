@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-gandi/go-gandi/livedns"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/tiramiseb/go-gandi/livedns"
 )
 
 func resourceLiveDNSDomain() *schema.Resource {

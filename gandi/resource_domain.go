@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-gandi/go-gandi/domain"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
-	"github.com/tiramiseb/go-gandi/domain"
 )
 
 func resourceDomain() *schema.Resource {

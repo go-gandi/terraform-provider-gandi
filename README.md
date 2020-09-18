@@ -18,14 +18,14 @@ See the [Hashicorp Terraform documentation](https://www.terraform.io/docs/plugin
 ## Example
 
 This example partly mimics the steps of [the official LiveDNS documentation example](http://doc.livedns.gandi.net/#quick-example), using the parts that have been implemented as Terraform resources.
-Note: sharing_id is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization). 
+Note: sharing_id is optional. It is used e.g. when the API key is registered to a user, where the domain you want to manage is not registered with that user (but the user does have rights on that zone/organization).
 
 ```
 terraform {
   required_providers {
     gandi = {
       versions = ["2.0.0"]
-      source   = "github/tiramiseb/gandi"
+      source   = "github/go-gandi/gandi"
     }
   }
 }
@@ -66,7 +66,7 @@ terraform {
   required_providers {
     gandi = {
       versions = ["2.0.0"]
-      source   = "github/tiramiseb/gandi"
+      source   = "github/go-gandi/gandi"
     }
   }
 }

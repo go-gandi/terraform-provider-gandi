@@ -52,8 +52,8 @@ test-compile:
 	go test -c $(TEST) $(TESTARGS)
 
 install: default
-	@install -d $(HOME)/.terraform.d/plugins/github/tiramiseb/gandi/$(VERSION)/$(TF_PLATFORM)
-	@install -m 755 terraform-provider-gandi $(HOME)/.terraform.d/plugins/github/tiramiseb/gandi/$(VERSION)/$(TF_PLATFORM)/
+	@install -d $(HOME)/.terraform.d/plugins/github/go-gandi/gandi/$(VERSION)/$(TF_PLATFORM)
+	@install -m 755 terraform-provider-gandi $(HOME)/.terraform.d/plugins/github/go-gandi/gandi/$(VERSION)/$(TF_PLATFORM)/
 
 website:
 ifeq (,$(wildcard $(GOPATH)/src/$(WEBSITE_REPO)))
