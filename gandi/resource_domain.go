@@ -122,7 +122,7 @@ func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
 		request.Nameservers = expandNameServers(nameservers.([]interface{}))
 	}
 
-	if err := client.CreateDomain(fqdn, request); err != nil {
+	if err := client.CreateDomain(request); err != nil {
 		return err
 	}
 
