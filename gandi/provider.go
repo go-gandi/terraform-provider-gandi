@@ -12,27 +12,28 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			"key": &schema.Schema{
+			"key": {
 				Type:        schema.TypeString,
 				Required:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_KEY", nil),
 				Description: "A Gandi API key",
 			},
-			"sharing_id": &schema.Schema{
+			"sharing_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_SHARING_ID", nil),
 				Description: "A Gandi Sharing ID",
 			},
-			"dry_run": &schema.Schema{
+			"dry_run": {
 				Type:        schema.TypeBool,
 				Optional:    true,
 				Description: "Prevent the Domain provider from taking certain actions",
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
-			"gandi_livedns_domain": dataSourceLiveDNSDomain(),
-			"gandi_domain":         dataSourceDomain(),
+			"gandi_livedns_domain":    dataSourceLiveDNSDomain(),
+			"gandi_livedns_domain_ns": dataSourceLiveDNSDomainNS(),
+			"gandi_domain":            dataSourceDomain(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain": resourceLiveDNSDomain(),
