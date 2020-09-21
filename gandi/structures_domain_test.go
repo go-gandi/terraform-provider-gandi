@@ -73,6 +73,10 @@ func TestFlattenContact(t *testing.T) {
 	type args struct {
 		in *domain.Contact
 	}
+
+	trueVar := true
+	falseVar := false
+
 	tests := []struct {
 		name string
 		args args
@@ -81,28 +85,36 @@ func TestFlattenContact(t *testing.T) {
 		{name: "valid",
 			args: args{
 				in: &domain.Contact{
-					ContactType: 1,
-					Country:     "GB",
-					Email:       "test@example.com",
-					FamilyName:  "User",
-					GivenName:   "Test",
-					StreetAddr:  "1 Uncanny Valley",
-					OrgName:     "Test Org",
-					Phone:       "+1.2123333444",
-					City:        "Libreville",
-					Zip:         "12345",
+					ContactType:     1,
+					Country:         "GB",
+					Email:           "test@example.com",
+					FamilyName:      "User",
+					GivenName:       "Test",
+					StreetAddr:      "1 Uncanny Valley",
+					OrgName:         "Test Org",
+					Phone:           "+1.2123333444",
+					City:            "Libreville",
+					State:           "Test",
+					DataObfuscated:  &trueVar,
+					MailObfuscated:  &falseVar,
+					ExtraParameters: map[string]interface{}{"foo": "bar"},
+					Zip:             "12345",
 				}},
 			want: map[string]interface{}{
-				"country":      "GB",
-				"email":        "test@example.com",
-				"family_name":  "User",
-				"given_name":   "Test",
-				"street_addr":  "1 Uncanny Valley",
-				"type":         "company",
-				"organisation": "Test Org",
-				"phone":        "+1.2123333444",
-				"city":         "Libreville",
-				"zip":          "12345",
+				"country":          "GB",
+				"email":            "test@example.com",
+				"family_name":      "User",
+				"given_name":       "Test",
+				"street_addr":      "1 Uncanny Valley",
+				"type":             "company",
+				"organisation":     "Test Org",
+				"phone":            "+1.2123333444",
+				"city":             "Libreville",
+				"state":            "Test",
+				"data_obfuscated":  true,
+				"mail_obfuscated":  false,
+				"extra_parameters": map[string]interface{}{"foo": "bar"},
+				"zip":              "12345",
 			},
 		},
 	}
@@ -117,33 +129,44 @@ func TestFlattenContact(t *testing.T) {
 }
 
 func TestExpandContact(t *testing.T) {
+	trueVar := true
+	falseVar := false
+
 	want := &domain.Contact{
-		ContactType: 1,
-		Country:     "GB",
-		Email:       "test@example.com",
-		FamilyName:  "User",
-		GivenName:   "Test",
-		StreetAddr:  "1 Uncanny Valley",
-		OrgName:     "Test Org",
-		Phone:       "+1.2123333444",
-		City:        "Libreville",
-		Zip:         "12345",
+		ContactType:     1,
+		Country:         "GB",
+		Email:           "test@example.com",
+		FamilyName:      "User",
+		GivenName:       "Test",
+		StreetAddr:      "1 Uncanny Valley",
+		OrgName:         "Test Org",
+		Phone:           "+1.2123333444",
+		City:            "Libreville",
+		State:           "Test",
+		DataObfuscated:  &trueVar,
+		MailObfuscated:  &falseVar,
+		ExtraParameters: map[string]interface{}{"foo": "bar"},
+		Zip:             "12345",
 	}
 
 	s := contactSchema()
 	contact := s.ZeroValue().(*schema.Set)
 
 	contact.Add(map[string]interface{}{
-		"country":      "GB",
-		"email":        "test@example.com",
-		"family_name":  "User",
-		"given_name":   "Test",
-		"street_addr":  "1 Uncanny Valley",
-		"type":         "company",
-		"organisation": "Test Org",
-		"phone":        "+1.2123333444",
-		"city":         "Libreville",
-		"zip":          "12345",
+		"country":          "GB",
+		"email":            "test@example.com",
+		"family_name":      "User",
+		"given_name":       "Test",
+		"street_addr":      "1 Uncanny Valley",
+		"type":             "company",
+		"organisation":     "Test Org",
+		"phone":            "+1.2123333444",
+		"city":             "Libreville",
+		"state":            "Test",
+		"data_obfuscated":  true,
+		"mail_obfuscated":  false,
+		"extra_parameters": map[string]interface{}{"foo": "bar"},
+		"zip":              "12345",
 	})
 
 	if got := expandContact(contact); !reflect.DeepEqual(got, want) {
