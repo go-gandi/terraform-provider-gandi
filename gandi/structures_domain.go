@@ -11,6 +11,10 @@ import (
 func flattenContact(in *domain.Contact) []interface{} {
 	m := make(map[string]interface{})
 	m["country"] = in.Country
+	m["state"] = in.State
+	m["mail_obfuscated"] = *in.MailObfuscated
+	m["data_obfuscated"] = *in.DataObfuscated
+	m["extra_parameters"] = in.ExtraParameters
 	m["email"] = in.Email
 	m["family_name"] = in.FamilyName
 	m["given_name"] = in.GivenName
@@ -41,19 +45,38 @@ var flattenContactType = []string{
 }
 
 func expandContact(in interface{}) *domain.Contact {
-	set := in.(*schema.Set)
-	contact := set.List()[0].(map[string]interface{})
+	list := in.(*schema.Set).List()
+
+	contact := map[string]interface{}{}
+
+	// For some reason I don't understand, sometimes
+	// there are empty elements in the middle of the
+	// list, so we have to filter them out
+	for _, elem := range list {
+		candidate := elem.(map[string]interface{})
+		if candidate["given_name"].(string) != "" {
+			contact = candidate
+		}
+	}
+
+	dataObfuscated := contact["data_obfuscated"].(bool)
+	mailObfuscated := contact["mail_obfuscated"].(bool)
+
 	cnt := domain.Contact{
-		Country:     contact["country"].(string),
-		Email:       contact["email"].(string),
-		FamilyName:  contact["family_name"].(string),
-		GivenName:   contact["given_name"].(string),
-		StreetAddr:  contact["street_addr"].(string),
-		Phone:       contact["phone"].(string),
-		City:        contact["city"].(string),
-		OrgName:     contact["organisation"].(string),
-		Zip:         contact["zip"].(string),
-		ContactType: expandContactType[contact["type"].(string)],
+		Country:         contact["country"].(string),
+		State:           contact["state"].(string),
+		DataObfuscated:  &dataObfuscated,
+		MailObfuscated:  &mailObfuscated,
+		Email:           contact["email"].(string),
+		FamilyName:      contact["family_name"].(string),
+		GivenName:       contact["given_name"].(string),
+		StreetAddr:      contact["street_addr"].(string),
+		Phone:           contact["phone"].(string),
+		City:            contact["city"].(string),
+		OrgName:         contact["organisation"].(string),
+		Zip:             contact["zip"].(string),
+		ContactType:     expandContactType[contact["type"].(string)],
+		ExtraParameters: contact["extra_parameters"].(map[string]interface{}),
 	}
 	return &cnt
 }

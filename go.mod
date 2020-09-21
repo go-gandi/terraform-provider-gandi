@@ -5,7 +5,7 @@ require (
 	cloud.google.com/go/storage v1.5.0 // indirect
 	github.com/aws/aws-sdk-go v1.27.3 // indirect
 	github.com/fatih/color v1.9.0 // indirect
-	github.com/go-gandi/go-gandi v0.0.0-20200918123007-496fad2b8701
+	github.com/go-gandi/go-gandi v0.0.0-20200921091836-0d8a64b9cc09
 	github.com/google/go-cmp v0.4.0 // indirect
 	github.com/hashicorp/go-getter v1.4.1 // indirect
 	github.com/hashicorp/go-hclog v0.10.1 // indirect

@@ -55,6 +55,11 @@ func contactSchema() *schema.Schema {
 					ValidateFunc: validateCountryCode,
 					Description:  "The two letter country code for the contact",
 				},
+				"state": {
+					Type:        schema.TypeString,
+					Optional:    true,
+					Description: "The state code for the contact",
+				},
 				"email": {
 					Type:        schema.TypeString,
 					Required:    true,
@@ -100,6 +105,24 @@ func contactSchema() *schema.Schema {
 					Type:        schema.TypeString,
 					Required:    true,
 					Description: "Postal Code/Zipcode of the contact",
+				},
+				"data_obfuscated": {
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+					Description: "Whether or not to obfuscate contact data in WHOIS",
+				},
+				"mail_obfuscated": {
+					Type:        schema.TypeBool,
+					Default:     false,
+					Optional:    true,
+					Description: "Whether or not to obfuscate contact email in WHOIS",
+				},
+				"extra_parameters": {
+					Type:        schema.TypeMap,
+					Optional:    true,
+					Elem:        &schema.Schema{Type: schema.TypeString},
+					Description: "Extra parameters, needed for some jurisdictions",
 				},
 			},
 		},
