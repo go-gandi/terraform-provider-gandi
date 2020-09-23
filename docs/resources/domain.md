@@ -33,6 +33,7 @@ Nested contact detail blocks have the following structure:
 * `type` - (Required) The type of contact. Can be one of `person`, `company`, `association` or `public`.
 * `phone` - (Required) The phone number for the contact.
 * `city` - (Required) The city the contact is based in.
+* `state` - (Optional) The state code for the contact.
 * `organisation` - (Required unless the `type` is `person`) The legal name of the organisation.
 * `zip` - (Required) Postal Code/Zip of the contact.
 * `data_obfuscated` - (Optional) Whether to obfuscate contact details in WHOIS. Defaults to `false`.
