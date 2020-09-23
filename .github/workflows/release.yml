@@ -9,18 +9,32 @@ jobs:
   deploy:
     name: Push artifact as GitHub release
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Download built artifact
-        uses: actions/download-artifact@v1
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Unshallow
+        run: git fetch --prune --unshallow
+      -
+        name: Set up Go
+        uses: actions/setup-go@v2
         with:
-          name: build-artifact
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
+          go-version: 1.14
+      -
+        name: Import GPG key
+        id: import_gpg
+        uses: paultyng/ghaction-import-gpg@v2.1.0
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+      - 
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build-artifact/terraform-provider-gandi*
-          tag: ${{ github.ref }}
-          overwrite: true
-          file_glob: true
+          version: latest
+          args: release --rm-dist
+        env:
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outsputs.fingerprint }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
