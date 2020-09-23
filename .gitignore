@@ -2,5 +2,12 @@
 terraform-provider-gandi*
 *.tf
 *.tfstate*
+terraform.tfplan
 .terraform
 crash.log
+dist
+
+website/vendor
+
+# Keep windows files with windows line endings
+*.winfile eol=crlf
