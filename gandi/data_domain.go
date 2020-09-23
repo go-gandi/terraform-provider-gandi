@@ -17,7 +17,7 @@ func dataSourceDomain() *schema.Resource {
 			"nameservers": {
 				Type:        schema.TypeList,
 				Elem:        &schema.Schema{Type: schema.TypeString},
-				Optional:    true,
+				Computed:    true,
 				Description: "A list of nameservers for the domain",
 			},
 		},

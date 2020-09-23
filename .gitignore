@@ -6,6 +6,7 @@ terraform.tfplan
 .terraform
 crash.log
 dist
+.vscode
 
 website/vendor
 
