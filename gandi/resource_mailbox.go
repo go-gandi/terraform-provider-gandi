@@ -1,10 +1,11 @@
 package gandi
 
 import (
-	"github.com/go-gandi/go-gandi/email"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"sort"
 	"time"
+
+	"github.com/go-gandi/go-gandi/email"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceMailbox() *schema.Resource {
