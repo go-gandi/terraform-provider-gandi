@@ -4,28 +4,23 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/go-gandi/go-gandi/email"
+	gandiemail "github.com/go-gandi/go-gandi/email"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceEmailForwarding() *schema.Resource {
 	return &schema.Resource{
 		Schema: map[string]*schema.Schema{
-			"domain": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Domain name",
-			},
 			"source": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Account alias name",
 			},
-			"destination": {
+			"destinations": {
 				Type:        schema.TypeList,
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Required:    true,
-				Description: "Forwards to email address",
+				Description: "Forwards to email addresses",
 			},
 		},
 		Create: resourceEmailForwardingCreate,
@@ -45,17 +40,17 @@ func splitID(id string) (source, domain string) {
 
 func resourceEmailForwardingCreate(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Email
-	domain := d.Get("domain").(string)
 	source := d.Get("source").(string)
+	email, domain := splitID(source)
 
 	var destinations []string
-	for _, i := range d.Get("destination").([]interface{}) {
+	for _, i := range d.Get("destinations").([]interface{}) {
 		destinations = append(destinations, i.(string))
 	}
 	sort.Strings(destinations)
 
-	request := email.CreateForwardRequest{
-		Source:       source,
+	request := gandiemail.CreateForwardRequest{
+		Source:       email,
 		Destinations: destinations,
 	}
 
@@ -64,7 +59,7 @@ func resourceEmailForwardingCreate(d *schema.ResourceData, meta interface{}) (er
 		return
 	}
 
-	d.SetId(source + "@" + domain)
+	d.SetId(email + "@" + domain)
 
 	return resourceEmailForwardingRead(d, meta)
 }
@@ -78,7 +73,7 @@ func resourceEmailForwardingRead(d *schema.ResourceData, meta interface{}) (err 
 		return
 	}
 
-	var response email.GetForwardRequest
+	var response gandiemail.GetForwardRequest
 
 	for _, found := range forwards {
 		if found.Source == source {
@@ -88,8 +83,7 @@ func resourceEmailForwardingRead(d *schema.ResourceData, meta interface{}) (err 
 	}
 
 	d.Set("href", response.Href)
-	//sort.Strings(response.Destinations)
-	d.Set("destination", response.Destinations)
+	d.Set("destinations", response.Destinations)
 	return
 }
 
@@ -98,12 +92,11 @@ func resourceEmailForwardingUpdate(d *schema.ResourceData, meta interface{}) (er
 	source, domain := splitID(d.Id())
 
 	var destinations []string
-	for _, i := range d.Get("destination").([]interface{}) {
+	for _, i := range d.Get("destinations").([]interface{}) {
 		destinations = append(destinations, i.(string))
 	}
-	//sort.Strings(destinations)
 
-	request := email.UpdateForwardRequest{
+	request := gandiemail.UpdateForwardRequest{
 		Destinations: destinations,
 	}
 
@@ -131,7 +124,7 @@ func resourceEmailForwardingImport(d *schema.ResourceData, meta interface{}) (da
 		return
 	}
 
-	var response email.GetForwardRequest
+	var response gandiemail.GetForwardRequest
 
 	for _, found := range forwards {
 		if found.Source == source {
@@ -142,7 +135,7 @@ func resourceEmailForwardingImport(d *schema.ResourceData, meta interface{}) (da
 
 	d.Set("href", response.Href)
 	sort.Strings(response.Destinations)
-	d.Set("destination", response.Destinations)
+	d.Set("destinations", response.Destinations)
 
 	data = []*schema.ResourceData{d}
 	return
