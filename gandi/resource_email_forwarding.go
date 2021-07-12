@@ -1,10 +1,11 @@
 package gandi
 
 import (
-	"github.com/go-gandi/go-gandi/email"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	"sort"
 	"strings"
+
+	"github.com/go-gandi/go-gandi/email"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func resourceEmailForwarding() *schema.Resource {

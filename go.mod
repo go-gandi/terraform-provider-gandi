@@ -1,5 +1,9 @@
 module github.com/go-gandi/terraform-provider-gandi
 
+go 1.16
+
+replace github.com/go-gandi/go-gandi => github.com/karnauskas/go-gandi v0.0.0-20201009104743-bdcf8de2b0e9
+
 require (
 	cloud.google.com/go v0.51.0 // indirect
 	cloud.google.com/go/storage v1.5.0 // indirect
@@ -23,5 +27,3 @@ require (
 	golang.org/x/sys v0.0.0-20200107162124-548cf772de50 // indirect
 	google.golang.org/genproto v0.0.0-20200108215221-bd8f9a0ef82f // indirect
 )
-
-go 1.13
