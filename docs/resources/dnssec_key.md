@@ -25,3 +25,9 @@ resource "gandi_dnssec_key" "my_key" {
 * `digest` - Digest of the added key.
 * `digest_type` - Type of digest.
 * `keytag` - The keytag assigned by the server.
+
+## Import
+
+Existing keys can be imported by running:
+
+`terraform import gandi_dnssec_key.my_key example.com/<id>`, where the key ID is a UUID that can be found through querying the [Gandi API](https://api.gandi.net/docs/domains/#get-v5-domain-domains-domain-dnskeys)
