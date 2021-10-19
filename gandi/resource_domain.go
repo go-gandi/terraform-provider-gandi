@@ -167,11 +167,15 @@ func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	d.SetId(response.FQDN)
-	d.Set("name", response.FQDN)
+	if err = d.Set("name", response.FQDN); err != nil {
+		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+	}
 	if err = d.Set("nameservers", response.Nameservers); err != nil {
 		return fmt.Errorf("Failed to set nameservers for %s: %w", d.Id(), err)
 	}
-	d.Set("autorenew", response.AutoRenew.Enabled)
+	if err = d.Set("autorenew", response.AutoRenew.Enabled); err != nil {
+		return fmt.Errorf("Failed to set autorenew for %s: %w", d.Id(), err)
+	}
 	if response.Contacts != nil {
 		if response.Contacts.Owner != nil {
 			if err = d.Set("owner", flattenContact(response.Contacts.Owner)); err != nil {

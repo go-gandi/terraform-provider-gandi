@@ -39,6 +39,7 @@ func Provider() *schema.Provider {
 			"gandi_livedns_domain": resourceLiveDNSDomain(),
 			"gandi_livedns_record": resourceLiveDNSRecord(),
 			"gandi_domain":         resourceDomain(),
+			"gandi_dnssec_key":     resourceDNSSECKey(),
 		},
 		ConfigureFunc: getGandiClients,
 	}

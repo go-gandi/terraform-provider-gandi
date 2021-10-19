@@ -67,8 +67,12 @@ func resourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	d.SetId(zone.FQDN)
-	d.Set("name", zone.FQDN)
-	d.Set("automatic_snapshots", zone.AutomaticSnapshots)
+	if err = d.Set("name", zone.FQDN); err != nil {
+		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("automatic_snapshots", zone.AutomaticSnapshots); err != nil {
+		return fmt.Errorf("Failed to set automatic_snapshots for %s: %w", d.Id(), err)
+	}
 	return nil
 }
 
