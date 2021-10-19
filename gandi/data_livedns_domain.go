@@ -27,6 +27,8 @@ func dataSourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error
 		return fmt.Errorf("Unknown domain '%s': %w", name, err)
 	}
 	d.SetId(found.FQDN)
-	d.Set("name", found.FQDN)
+	if err = d.Set("name", found.FQDN); err != nil {
+		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+	}
 	return nil
 }

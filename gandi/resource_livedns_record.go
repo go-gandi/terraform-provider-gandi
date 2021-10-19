@@ -91,15 +91,28 @@ func resourceLiveDNSRecordCreate(d *schema.ResourceData, meta interface{}) error
 func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*clients).LiveDNS
 	zone, name, recordType, err := expandRecordID(d.Id())
+	if err != nil {
+		return err
+	}
 	record, err := client.GetDomainRecordByNameAndType(zone, name, recordType)
 	if err != nil {
 		return err
 	}
-	d.Set("zone", zone)
-	d.Set("name", record.RrsetName)
-	d.Set("type", record.RrsetType)
-	d.Set("ttl", record.RrsetTTL)
-	d.Set("href", record.RrsetHref)
+	if err = d.Set("zone", zone); err != nil {
+		return fmt.Errorf("Failed to set zone for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("name", record.RrsetName); err != nil {
+		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("type", record.RrsetType); err != nil {
+		return fmt.Errorf("Failed to set type for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("ttl", record.RrsetTTL); err != nil {
+		return fmt.Errorf("Failed to set ttl for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("href", record.RrsetHref); err != nil {
+		return fmt.Errorf("Failed to set href for %s: %w", d.Id(), err)
+	}
 	if err = d.Set("values", record.RrsetValues); err != nil {
 		return fmt.Errorf("Failed to set the values for %s: %w", d.Id(), err)
 	}
@@ -121,6 +134,9 @@ func resourceLiveDNSRecordUpdate(d *schema.ResourceData, meta interface{}) error
 		values = append(values, v.(string))
 	}
 	_, err = client.UpdateDomainRecordByNameAndType(zone, name, recordType, ttl, values)
+	if err != nil {
+		return err
+	}
 	return resourceLiveDNSRecordRead(d, meta)
 }
 
@@ -132,9 +148,7 @@ func resourceLiveDNSRecordDelete(d *schema.ResourceData, meta interface{}) error
 		return err
 	}
 
-	err = client.DeleteDomainRecord(zone, name, recordType)
-
-	if err != nil {
+	if err = client.DeleteDomainRecord(zone, name, recordType); err != nil {
 		return err
 	}
 

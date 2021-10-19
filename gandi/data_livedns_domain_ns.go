@@ -1,6 +1,8 @@
 package gandi
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -32,6 +34,8 @@ func dataSourceLiveDNSDomainNSRead(d *schema.ResourceData, meta interface{}) err
 	}
 
 	d.SetId(name)
-	d.Set("nameservers", ns)
+	if err = d.Set("nameservers", ns); err != nil {
+		return fmt.Errorf("Failed to set nameservers for %s: %w", d.Id(), err)
+	}
 	return nil
 }

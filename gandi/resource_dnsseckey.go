@@ -49,16 +49,16 @@ func resourceDNSSECKey() *schema.Resource {
 
 func resourceDNSSECKeyCreate(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Domain
-	res_domain := d.Get("domain").(string)
-	public_key := d.Get("public_key").(string)
+	resDomain := d.Get("domain").(string)
+	publicKey := d.Get("public_key").(string)
 
 	request := domain.DNSSECKeyCreateRequest{
 		Algorithm: d.Get("algorithm").(int),
 		Type:      d.Get("type").(string),
-		PublicKey: public_key,
+		PublicKey: publicKey,
 	}
 
-	err = client.CreateDNSSECKey(res_domain, request)
+	err = client.CreateDNSSECKey(resDomain, request)
 	if err != nil {
 		return
 	}
@@ -66,13 +66,13 @@ func resourceDNSSECKeyCreate(d *schema.ResourceData, meta interface{}) (err erro
 	// Sent, got 202 response. What's now?
 	time.Sleep(2 * time.Second)
 
-	keys, err := client.ListDNSSECKeys(res_domain)
+	keys, err := client.ListDNSSECKeys(resDomain)
 	if err != nil {
 		return
 	}
 
 	for _, k := range keys {
-		if k.PublicKey == public_key {
+		if k.PublicKey == publicKey {
 			d.SetId(strconv.Itoa(k.ID))
 			break
 		}
@@ -83,41 +83,57 @@ func resourceDNSSECKeyCreate(d *schema.ResourceData, meta interface{}) (err erro
 
 func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Domain
-	res_domain := d.Get("domain").(string)
+	resDomain := d.Get("domain").(string)
 	id := d.Id()
 	if strings.Contains(id, "/") {
 		parts := strings.SplitN(id, "/", 2)
-		res_domain = parts[0]
+		resDomain = parts[0]
 		id = parts[1]
-		d.Set("id", id)
+		if err = d.Set("id", id); err != nil {
+			return fmt.Errorf("Failed to set id for %s: %w", d.Id(), err)
+		}
 	}
 
-	keys, err := client.ListDNSSECKeys(res_domain)
+	keys, err := client.ListDNSSECKeys(resDomain)
 	if err != nil {
 		return
 	}
 
 	var found domain.DNSSECKey
-	var matched_key bool = false
+	var matchedKey bool = false
 	for _, k := range keys {
 		if strconv.Itoa(k.ID) == id {
 			found = k
-			matched_key = true
+			matchedKey = true
 			break
 		}
 	}
-	if !matched_key {
-		err = fmt.Errorf("Cannot find DNSSEC key %s for domain %s", id, res_domain)
+	if !matchedKey {
+		err = fmt.Errorf("Cannot find DNSSEC key %s for domain %s", id, resDomain)
 		return
 	}
 
-	d.Set("algorithm", found.Algorithm)
-	d.Set("type", found.Type)
-	d.Set("public_key", found.PublicKey)
-	d.Set("domain", res_domain)
-	d.Set("digest", found.Digest)
-	d.Set("digest_type", found.DigestType)
-	d.Set("keytag", found.KeyTag)
+	if err = d.Set("algorithm", found.Algorithm); err != nil {
+		return fmt.Errorf("Failed to set algorithm for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("type", found.Type); err != nil {
+		return fmt.Errorf("Failed to set type for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("public_key", found.PublicKey); err != nil {
+		return fmt.Errorf("Failed to set public key for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("domain", resDomain); err != nil {
+		return fmt.Errorf("Failed to set domain for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("digest", found.Digest); err != nil {
+		return fmt.Errorf("Failed to set digest for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("digest_type", found.DigestType); err != nil {
+		return fmt.Errorf("Failed to set digest_type for %s: %w", d.Id(), err)
+	}
+	if err = d.Set("keytag", found.KeyTag); err != nil {
+		return fmt.Errorf("Failed to set keytag for %s: %w", d.Id(), err)
+	}
 	return
 }
 
@@ -129,7 +145,9 @@ func resourceDNSSECKeyDelete(d *schema.ResourceData, meta interface{}) (err erro
 		parts := strings.SplitN(id, "/", 2)
 		domain = parts[0]
 		id = parts[1]
-		d.Set("id", id)
+		if err = d.Set("id", id); err != nil {
+			return fmt.Errorf("Failed to set id for %s: %w", d.Id(), err)
+		}
 	}
 
 	err = client.DeleteDNSSECKey(domain, id)
