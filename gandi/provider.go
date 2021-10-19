@@ -45,8 +45,8 @@ func Provider() *schema.Provider {
 }
 
 type clients struct {
-	Domain  *domain.Domain
-	LiveDNS *livedns.LiveDNS
+	Domain  *domain.DomainAPI
+	LiveDNS *livedns.LiveDNSAPI
 }
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
