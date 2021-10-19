@@ -1,6 +1,7 @@
 package gandi
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 
@@ -54,8 +55,7 @@ func resourceEmailForwardingCreate(d *schema.ResourceData, meta interface{}) (er
 		Destinations: destinations,
 	}
 
-	err = client.CreateForward(domain, request)
-	if err != nil {
+	if err = client.CreateForward(domain, request); err != nil {
 		return
 	}
 
@@ -82,8 +82,12 @@ func resourceEmailForwardingRead(d *schema.ResourceData, meta interface{}) (err 
 		}
 	}
 
-	d.Set("href", response.Href)
-	d.Set("destinations", response.Destinations)
+	if err = d.Set("href", response.Href); err != nil {
+		return fmt.Errorf("Failed to set href for %s: %s", d.Id(), err)
+	}
+	if err = d.Set("destinations", response.Destinations); err != nil {
+		return fmt.Errorf("Failed to set destination for %s: %s", d.Id(), err)
+	}
 	return
 }
 
@@ -111,7 +115,9 @@ func resourceEmailForwardingDelete(d *schema.ResourceData, meta interface{}) (er
 	client := meta.(*clients).Email
 	source, domain := splitID(d.Id())
 
-	err = client.DeleteForward(domain, source)
+	if err = client.DeleteForward(domain, source); err != nil {
+		return
+	}
 	return
 }
 
@@ -133,9 +139,13 @@ func resourceEmailForwardingImport(d *schema.ResourceData, meta interface{}) (da
 		}
 	}
 
-	d.Set("href", response.Href)
+	if err = d.Set("href", response.Href); err != nil {
+		return nil, fmt.Errorf("Failed to set href for %s: %s", d.Id(), err)
+	}
 	sort.Strings(response.Destinations)
-	d.Set("destinations", response.Destinations)
+	if err = d.Set("destinations", response.Destinations); err != nil {
+		return nil, fmt.Errorf("Failed to set destinations for %s: %s", d.Id(), err)
+	}
 
 	data = []*schema.ResourceData{d}
 	return
