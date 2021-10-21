@@ -42,6 +42,7 @@ jobs:
       if: runner.os == 'Linux'
       with:
         working-directory: "./gandi/"
+        skip-pkg-cache: true
 
 # This still does something weird, comment out for now
 #    - name: TF Provider Lint
