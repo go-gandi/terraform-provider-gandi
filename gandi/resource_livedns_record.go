@@ -43,6 +43,11 @@ func resourceLiveDNSRecord() *schema.Resource {
 				Required:    true,
 				Description: "The TTL of the record",
 			},
+			"href": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The href of the record",
+			},
 			"values": {
 				Type:        schema.TypeSet,
 				Elem:        &schema.Schema{Type: schema.TypeString},
