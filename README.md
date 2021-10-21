@@ -112,6 +112,22 @@ If you wish to work on the provider, you'll first need [Go](http://www.golang.or
 
 To compile the provider, run `make`.
 
+### Linting
+
+We use [pre-commit](https://pre-commit.com/) to managing and maintaining hooks, you can follow the [official website instructions](https://pre-commit.com/#install) to install it.
+
+**Install**
+
+```bash
+python3 -m pip install pre-commit
+```
+
+Then in the repo root dir
+
+```bash
+pre-commit install
+```
+
 ## Adding Dependencies
 
 This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).

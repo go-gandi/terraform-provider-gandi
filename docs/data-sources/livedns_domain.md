@@ -12,8 +12,8 @@ data "gandi_livedns_domain" "my_domain" {
 
 ## Argument Reference
 
-* `name` - (Required) The FQDN of the domain.
+- `name` - (Required) The FQDN of the domain.
 
 ## Attribute Reference
 
-* `id` - The ID of the domain.
+- `id` - The ID of the domain.
