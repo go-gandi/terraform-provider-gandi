@@ -13,10 +13,10 @@ resource "gandi_livedns_domain" "my_domain" {
 
 ## Argument Reference
 
-* `name` - (Required) The FQDN of the domain.
-* `ttl` - (Required) The default TTL of the domain.
-* `automatic_snapshots` - (Optional) Enable the automatic creation of snapshots when changes are made.
+- `name` - (Required) The FQDN of the domain.
+- `ttl` - (Required) The default TTL of the domain.
+- `automatic_snapshots` - (Optional) Enable the automatic creation of snapshots when changes are made.
 
 ## Attribute Reference
 
-* `id` - The ID of the resource.
+- `id` - The ID of the resource.

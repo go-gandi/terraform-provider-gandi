@@ -16,12 +16,12 @@ resource "gandi_livedns_record" "www_my_domain" {
 
 ## Argument Reference
 
-* `zone` - (Required) The FQDN of the domain.
-* `name` - (Required) The name of the record.
-* `type` - (Required) The type of the record. Can be one of "A", "AAAA", "ALIAS", "CAA", "CDS", "CNAME", "DNAME", "DS", "KEY", "LOC", "MX", "NS", "OPENPGPKEY", "PTR", "SPF", "SRV", "SSHFP", "TLSA", "TXT", "WKS".
-* `ttl` - (Required) The TTL of the record.
-* `values` - (Required) A list of the values of the record.
+- `zone` - (Required) The FQDN of the domain.
+- `name` - (Required) The name of the record.
+- `type` - (Required) The type of the record. Can be one of "A", "AAAA", "ALIAS", "CAA", "CDS", "CNAME", "DNAME", "DS", "KEY", "LOC", "MX", "NS", "OPENPGPKEY", "PTR", "SPF", "SRV", "SSHFP", "TLSA", "TXT", "WKS".
+- `ttl` - (Required) The TTL of the record.
+- `values` - (Required) A list of the values of the record.
 
 ## Attribute Reference
 
-* `id` - The ID of the resource.
+- `id` - The ID of the resource.
