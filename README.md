@@ -33,7 +33,7 @@ Note: sharing_id is optional. It is used e.g. when the API key is registered to 
 terraform {
   required_providers {
     gandi = {
-      versions = ["2.0.0"]
+      versions = ["2.0.0-rc3"]
       source   = "github/go-gandi/gandi"
     }
   }
@@ -74,7 +74,7 @@ If your zone already exists (which is very likely), you may use it as a data sou
 terraform {
   required_providers {
     gandi = {
-      versions = ["2.0.0"]
+      versions = ["X.Y.Z"]
       source   = "github/go-gandi/gandi"
     }
   }
