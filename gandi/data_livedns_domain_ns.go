@@ -35,7 +35,7 @@ func dataSourceLiveDNSDomainNSRead(d *schema.ResourceData, meta interface{}) err
 
 	d.SetId(name)
 	if err = d.Set("nameservers", ns); err != nil {
-		return fmt.Errorf("Failed to set nameservers for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set nameservers for %s: %w", d.Id(), err)
 	}
 	return nil
 }

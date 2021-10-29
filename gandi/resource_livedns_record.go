@@ -104,22 +104,22 @@ func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	if err = d.Set("zone", zone); err != nil {
-		return fmt.Errorf("Failed to set zone for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set zone for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("name", record.RrsetName); err != nil {
-		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set name for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("type", record.RrsetType); err != nil {
-		return fmt.Errorf("Failed to set type for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set type for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("ttl", record.RrsetTTL); err != nil {
-		return fmt.Errorf("Failed to set ttl for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set ttl for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("href", record.RrsetHref); err != nil {
-		return fmt.Errorf("Failed to set href for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set href for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("values", record.RrsetValues); err != nil {
-		return fmt.Errorf("Failed to set the values for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set the values for %s: %w", d.Id(), err)
 	}
 	return nil
 }

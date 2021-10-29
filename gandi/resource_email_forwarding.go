@@ -83,10 +83,10 @@ func resourceEmailForwardingRead(d *schema.ResourceData, meta interface{}) (err 
 	}
 
 	if err = d.Set("href", response.Href); err != nil {
-		return fmt.Errorf("Failed to set href for %s: %s", d.Id(), err)
+		return fmt.Errorf("failed to set href for %s: %s", d.Id(), err)
 	}
 	if err = d.Set("destinations", response.Destinations); err != nil {
-		return fmt.Errorf("Failed to set destination for %s: %s", d.Id(), err)
+		return fmt.Errorf("failed to set destination for %s: %s", d.Id(), err)
 	}
 	return
 }
@@ -140,11 +140,11 @@ func resourceEmailForwardingImport(d *schema.ResourceData, meta interface{}) (da
 	}
 
 	if err = d.Set("href", response.Href); err != nil {
-		return nil, fmt.Errorf("Failed to set href for %s: %s", d.Id(), err)
+		return nil, fmt.Errorf("failed to set href for %s: %s", d.Id(), err)
 	}
 	sort.Strings(response.Destinations)
 	if err = d.Set("destinations", response.Destinations); err != nil {
-		return nil, fmt.Errorf("Failed to set destinations for %s: %s", d.Id(), err)
+		return nil, fmt.Errorf("failed to set destinations for %s: %s", d.Id(), err)
 	}
 
 	data = []*schema.ResourceData{d}

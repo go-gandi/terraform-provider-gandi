@@ -53,7 +53,7 @@ func resourceLiveDNSDomainCreate(d *schema.ResourceData, meta interface{}) error
 	if autosnap, ok := d.GetOk("automatic_snapshots"); ok {
 		a := autosnap.(bool)
 		if _, err := client.UpdateDomain(name, livedns.UpdateDomainRequest{AutomaticSnapshots: &a}); err != nil {
-			return fmt.Errorf("Failed to enable automatic snapshots for %s: %w", name, err)
+			return fmt.Errorf("failed to enable automatic snapshots for %s: %w", name, err)
 		}
 	}
 	return resourceLiveDNSDomainRead(d, meta)
@@ -68,10 +68,10 @@ func resourceLiveDNSDomainRead(d *schema.ResourceData, meta interface{}) error {
 	}
 	d.SetId(zone.FQDN)
 	if err = d.Set("name", zone.FQDN); err != nil {
-		return fmt.Errorf("Failed to set name for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set name for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("automatic_snapshots", zone.AutomaticSnapshots); err != nil {
-		return fmt.Errorf("Failed to set automatic_snapshots for %s: %w", d.Id(), err)
+		return fmt.Errorf("failed to set automatic_snapshots for %s: %w", d.Id(), err)
 	}
 	return nil
 }
@@ -83,7 +83,7 @@ func resourceLiveDNSDomainUpdate(d *schema.ResourceData, meta interface{}) error
 	if d.HasChange("automatic_snapshots") {
 		a := d.Get("automatic_snapshots").(bool)
 		if _, err := client.UpdateDomain(name, livedns.UpdateDomainRequest{AutomaticSnapshots: &a}); err != nil {
-			return fmt.Errorf("Failed to enable automatic snapshots for %s: %w", name, err)
+			return fmt.Errorf("failed to enable automatic snapshots for %s: %w", name, err)
 		}
 	}
 	return resourceLiveDNSDomainRead(d, meta)
