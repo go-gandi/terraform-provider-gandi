@@ -4,7 +4,7 @@ WEBSITE_REPO=github.com/hashicorp/terraform-website
 PKG_NAME=gandi
 GO_PLATFORM=$(subst /, ,$(word 4, $(shell go version)))
 TF_PLATFORM=$(word 1, $(GO_PLATFORM))_$(word 2, $(GO_PLATFORM))
-VERSION=2.0.0
+VERSION=2.0.0-rc3
 
 default: fmtcheck build
 
