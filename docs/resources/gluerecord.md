@@ -1,6 +1,6 @@
-# Resource: livedns_record
+# Resource: gluerecord
 
-The `gluerecord` resource creates a Glue Record for a domain in the LiveDNS management system.
+The `gluerecord` resource creates a Glue Record for a domain. 
 
 ## Example Usage
 
