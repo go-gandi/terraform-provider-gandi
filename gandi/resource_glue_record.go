@@ -36,7 +36,7 @@ func resourceGlueRecord() *schema.Resource {
 				Type:        schema.TypeList,
 				Required:    true,
 				ForceNew:    true,
-				Description: "List of IP addresses.",
+				Description: "List of IP addresses",
 			},
 		},
 		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
