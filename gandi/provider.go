@@ -32,6 +32,12 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "Prevent the Domain provider from taking certain actions",
 			},
+			"url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("GANDI_URL", "https://api.gandi.net"),
+				Description: "The Gandi API URL",
+			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain":    dataSourceLiveDNSDomain(),
@@ -61,6 +67,7 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	logging.SetOutput()
 
 	config := config.Config{
+		APIURL:    d.Get("url").(string),
 		APIKey:    d.Get("key").(string),
 		SharingID: d.Get("sharing_id").(string),
 		DryRun:    d.Get("dry_run").(bool),
