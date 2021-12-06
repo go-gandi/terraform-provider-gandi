@@ -2,6 +2,7 @@ package gandi
 
 import (
 	"github.com/go-gandi/go-gandi"
+	"github.com/go-gandi/go-gandi/config"
 	"github.com/go-gandi/go-gandi/domain"
 	"github.com/go-gandi/go-gandi/email"
 	"github.com/go-gandi/go-gandi/livedns"
@@ -59,10 +60,14 @@ type clients struct {
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	logging.SetOutput()
 
-	config := gandi.Config{SharingID: d.Get("sharing_id").(string), DryRun: d.Get("dry_run").(bool)}
-	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
-	email := gandi.NewEmailClient(d.Get("key").(string), config)
-	domainClient := gandi.NewDomainClient(d.Get("key").(string), config)
+	config := config.Config{
+		APIKey:    d.Get("key").(string),
+		SharingID: d.Get("sharing_id").(string),
+		DryRun:    d.Get("dry_run").(bool),
+	}
+	liveDNS := gandi.NewLiveDNSClient(config)
+	email := gandi.NewEmailClient(config)
+	domainClient := gandi.NewDomainClient(config)
 
 	return &clients{
 		Domain:  domainClient,

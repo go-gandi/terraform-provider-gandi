@@ -4,7 +4,7 @@ go 1.16
 
 require (
 	github.com/fatih/color v1.9.0 // indirect
-	github.com/go-gandi/go-gandi v0.0.0-20211019080925-298766c2d6b7
+	github.com/go-gandi/go-gandi v0.0.0-20211207080006-e68c71983ee9
 	github.com/hashicorp/go-hclog v0.10.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/terraform-plugin-sdk v1.17.2
