@@ -30,7 +30,7 @@ func resourceGlueRecord() *schema.Resource {
 				Type:        schema.TypeString,
 				Required:    true,
 				ForceNew:    true,
-				Description: "Host name of the glue record.",
+				Description: "Host name of the glue record",
 			},
 			"values": {
 				Type:        schema.TypeList,
