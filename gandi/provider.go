@@ -64,13 +64,12 @@ type clients struct {
 }
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
-	logging.SetOutput()
-
 	config := config.Config{
 		APIURL:    d.Get("url").(string),
 		APIKey:    d.Get("key").(string),
 		SharingID: d.Get("sharing_id").(string),
 		DryRun:    d.Get("dry_run").(bool),
+		Debug:     logging.IsDebugOrHigher(),
 	}
 	liveDNS := gandi.NewLiveDNSClient(config)
 	email := gandi.NewEmailClient(config)
