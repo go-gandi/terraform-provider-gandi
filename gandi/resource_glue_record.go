@@ -2,6 +2,7 @@ package gandi
 
 import (
 	"fmt"
+	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"sort"
 	"time"
 
@@ -35,7 +36,7 @@ func resourceGlueRecord() *schema.Resource {
 			"values": {
 				Type:        schema.TypeList,
 				Required:    true,
-				ForceNew:    true,
+				ForceNew:    false,
 				Description: "List of IP addresses.",
 			},
 		},
@@ -61,22 +62,36 @@ func resourceGlueRecordCreate(d *schema.ResourceData, meta interface{}) (err err
 
 	err = client.CreateGlueRecord(resDomain, request)
 	if err != nil {
-		return
+		return fmt.Errorf("error creating instance: %s", err)
 	}
-
-	// Sent, got 202 response. Delay read.
-	time.Sleep(2 * time.Second)
 
 	d.SetId(name)
 
-	return resourceGlueRecordRead(d, meta)
+	return resource.Retry(d.Timeout(schema.TimeoutCreate) - time.Second, func() *resource.RetryError {
+		gluerecord, err = client.GetGlueRecord(resDomain, name)
+
+		if err != nil {
+			return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
+		}
+
+		if gluerecord == nil {
+			return resource.RetryableError(fmt.Errorf("expected glue record to be created but was not found"))
+		}
+
+		err = resourceGlueRecordRead(d, meta)
+		if err != nil {
+			return resource.NonRetryableError(err)
+		} else {
+			return nil
+		}
+	})
 }
 
 func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
 
-	id :=d.Id()
+	id := d.Id()
 	records, err := client.ListGlueRecords(resDomain)
 	if err != nil {
 		return
@@ -118,17 +133,34 @@ func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error
 func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
-	id :=d.Id()
+	id := d.Id()
 
 	if d.HasChanges("values") {
-		values := d.Get("values").([] string)
+		values := d.Get("values").([]string)
 
 		if err := client.UpdateGlueRecord(resDomain, id, values); err != nil {
 			return fmt.Errorf("failed to update values for glue record at %s: %w", id, err)
 		}
 	}
 
-	return resourceGlueRecordRead(d, meta)
+	return resource.Retry(d.Timeout(schema.TimeoutCreate) - time.Second, func() *resource.RetryError {
+		gluerecord, err = client.GetGlueRecord(resDomain, name)
+
+		if err != nil {
+			return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
+		}
+
+		if gluerecord == nil {
+			return resource.RetryableError(fmt.Errorf("expected glue record to be created but was not found"))
+		}
+
+		err = resourceGlueRecordRead(d, meta)
+		if err != nil {
+			return resource.NonRetryableError(err)
+		} else {
+			return nil
+		}
+	})
 }
 
 func resourceGlueRecordDelete(d *schema.ResourceData, meta interface{}) (err error) {
@@ -145,6 +177,5 @@ func resourceGlueRecordDelete(d *schema.ResourceData, meta interface{}) (err err
 		return err
 	}
 
-	d.SetId("")
 	return nil
 }
