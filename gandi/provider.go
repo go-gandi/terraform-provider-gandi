@@ -6,6 +6,7 @@ import (
 	"github.com/go-gandi/go-gandi/domain"
 	"github.com/go-gandi/go-gandi/email"
 	"github.com/go-gandi/go-gandi/livedns"
+	"github.com/go-gandi/go-gandi/simplehosting"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -46,21 +47,23 @@ func Provider() *schema.Provider {
 			"gandi_mailbox":           dataSourceMailbox(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"gandi_livedns_domain":   resourceLiveDNSDomain(),
-			"gandi_livedns_record":   resourceLiveDNSRecord(),
-			"gandi_domain":           resourceDomain(),
-			"gandi_mailbox":          resourceMailbox(),
-			"gandi_email_forwarding": resourceEmailForwarding(),
-			"gandi_dnssec_key":       resourceDNSSECKey(),
+			"gandi_livedns_domain":         resourceLiveDNSDomain(),
+			"gandi_livedns_record":         resourceLiveDNSRecord(),
+			"gandi_domain":                 resourceDomain(),
+			"gandi_mailbox":                resourceMailbox(),
+			"gandi_email_forwarding":       resourceEmailForwarding(),
+			"gandi_dnssec_key":             resourceDNSSECKey(),
+			"gandi_simplehosting_instance": resourceSimpleHostingInstance(),
 		},
 		ConfigureFunc: getGandiClients,
 	}
 }
 
 type clients struct {
-	Domain  *domain.Domain
-	Email   *email.Email
-	LiveDNS *livedns.LiveDNS
+	Domain        *domain.Domain
+	Email         *email.Email
+	LiveDNS       *livedns.LiveDNS
+	SimpleHosting *simplehosting.SimpleHosting
 }
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
@@ -74,10 +77,12 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	liveDNS := gandi.NewLiveDNSClient(config)
 	email := gandi.NewEmailClient(config)
 	domainClient := gandi.NewDomainClient(config)
+	simpleHostingClient := gandi.NewSimpleHostingClient(config)
 
 	return &clients{
-		Domain:  domainClient,
-		Email:   email,
-		LiveDNS: liveDNS,
+		Domain:        domainClient,
+		Email:         email,
+		LiveDNS:       liveDNS,
+		SimpleHosting: simpleHostingClient,
 	}, nil
 }
