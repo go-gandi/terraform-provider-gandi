@@ -45,6 +45,7 @@ func Provider() *schema.Provider {
 			"gandi_mailbox":          resourceMailbox(),
 			"gandi_email_forwarding": resourceEmailForwarding(),
 			"gandi_dnssec_key":       resourceDNSSECKey(),
+			"gandi_glue_record":      resourceGlueRecord(),
 		},
 		ConfigureFunc: getGandiClients,
 	}
