@@ -1,8 +1,13 @@
 # Terraform Gandi Provider
 
-This provider supports [managing DNS zones](https://api.gandi.net/docs/domains/) and [managing the LiveDNS service](https://api.gandi.net/docs/livedns/) in Gandi.
+This provider supports managing the following [Gandi
+resources](https://api.gandi.net/docs/):
 
-This provider currently doesn't support the Email, Organization or Billing APIs. We welcome pull requests to implement more functionality!
+- [DNS zones](https://api.gandi.net/docs/domains/)
+- [LiveDNS service](https://api.gandi.net/docs/livedns/)
+- [Email](https://api.gandi.net/docs/email/)
+
+This provider currently doesn't support Organization or Billing APIs. We welcome pull requests to implement more functionality!
 
 ## Requirements
 
