@@ -2,9 +2,11 @@ package gandi
 
 import (
 	"github.com/go-gandi/go-gandi"
+	"github.com/go-gandi/go-gandi/config"
 	"github.com/go-gandi/go-gandi/domain"
 	"github.com/go-gandi/go-gandi/email"
 	"github.com/go-gandi/go-gandi/livedns"
+	"github.com/go-gandi/go-gandi/simplehosting"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/logging"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
@@ -31,6 +33,12 @@ func Provider() *schema.Provider {
 				Optional:    true,
 				Description: "Prevent the Domain provider from taking certain actions",
 			},
+			"url": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("GANDI_URL", "https://api.gandi.net"),
+				Description: "The Gandi API URL",
+			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain":    dataSourceLiveDNSDomain(),
@@ -40,12 +48,13 @@ func Provider() *schema.Provider {
 			"gandi_glue_record":       dataSourceGlueRecord(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
-			"gandi_livedns_domain":   resourceLiveDNSDomain(),
-			"gandi_livedns_record":   resourceLiveDNSRecord(),
-			"gandi_domain":           resourceDomain(),
-			"gandi_mailbox":          resourceMailbox(),
-			"gandi_email_forwarding": resourceEmailForwarding(),
-			"gandi_dnssec_key":       resourceDNSSECKey(),
+			"gandi_livedns_domain":         resourceLiveDNSDomain(),
+			"gandi_livedns_record":         resourceLiveDNSRecord(),
+			"gandi_domain":                 resourceDomain(),
+			"gandi_mailbox":                resourceMailbox(),
+			"gandi_email_forwarding":       resourceEmailForwarding(),
+			"gandi_dnssec_key":             resourceDNSSECKey(),
+			"gandi_simplehosting_instance": resourceSimpleHostingInstance(),
 			"gandi_glue_record":      resourceGlueRecord(),
 		},
 		ConfigureFunc: getGandiClients,
@@ -53,22 +62,29 @@ func Provider() *schema.Provider {
 }
 
 type clients struct {
-	Domain  *domain.Domain
-	Email   *email.Email
-	LiveDNS *livedns.LiveDNS
+	Domain        *domain.Domain
+	Email         *email.Email
+	LiveDNS       *livedns.LiveDNS
+	SimpleHosting *simplehosting.SimpleHosting
 }
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
-	logging.SetOutput()
-
-	config := gandi.Config{SharingID: d.Get("sharing_id").(string), DryRun: d.Get("dry_run").(bool)}
-	liveDNS := gandi.NewLiveDNSClient(d.Get("key").(string), config)
-	email := gandi.NewEmailClient(d.Get("key").(string), config)
-	domainClient := gandi.NewDomainClient(d.Get("key").(string), config)
+	config := config.Config{
+		APIURL:    d.Get("url").(string),
+		APIKey:    d.Get("key").(string),
+		SharingID: d.Get("sharing_id").(string),
+		DryRun:    d.Get("dry_run").(bool),
+		Debug:     logging.IsDebugOrHigher(),
+	}
+	liveDNS := gandi.NewLiveDNSClient(config)
+	email := gandi.NewEmailClient(config)
+	domainClient := gandi.NewDomainClient(config)
+	simpleHostingClient := gandi.NewSimpleHostingClient(config)
 
 	return &clients{
-		Domain:  domainClient,
-		Email:   email,
-		LiveDNS: liveDNS,
+		Domain:        domainClient,
+		Email:         email,
+		LiveDNS:       liveDNS,
+		SimpleHosting: simpleHostingClient,
 	}, nil
 }
