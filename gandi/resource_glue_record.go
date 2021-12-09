@@ -48,15 +48,15 @@ func resourceGlueRecordCreate(d *schema.ResourceData, meta interface{}) (err err
 	resDomain := d.Get("zone").(string)
 	name := d.Get("name").(string)
 
-	var values []string
-	for _, i := range d.Get("values").([]interface{}) {
-		values = append(values, i.(string))
+	var ips []string
+	for _, i := range d.Get("ips").([]interface{}) {
+		ips = append(ips, i.(string))
 	}
-	sort.Strings(values)
+	sort.Strings(ips)
 
 	request := domain.GlueRecordCreateRequest{
 		Name: name,
-		IPs:  values,
+		IPs:  ips,
 	}
 
 	err = client.CreateGlueRecord(resDomain, request)
@@ -93,8 +93,8 @@ func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error
 	if err = d.Set("href", found.Href); err != nil {
 		return fmt.Errorf("failed to set href for %s: %w", d.Id(), err)
 	}
-	if err = d.Set("values", found.IPs); err != nil {
-		return fmt.Errorf("failed to set values for %s: %w", d.Id(), err)
+	if err = d.Set("ips", found.IPs); err != nil {
+		return fmt.Errorf("failed to set ips for %s: %w", d.Id(), err)
 	}
 	if err = d.Set("fqdn", found.FQDN); err != nil {
 		return fmt.Errorf("failed to set fqdn for %s: %w", d.Id(), err)
@@ -133,11 +133,11 @@ func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err err
 	resDomain := d.Get("zone").(string)
 	id := d.Id()
 
-	if d.HasChanges("values") {
-		values := d.Get("values").([]string)
+	if d.HasChanges("ips") {
+		ips := d.Get("ips").([]string)
 
-		if err := client.UpdateGlueRecord(resDomain, id, values); err != nil {
-			return fmt.Errorf("failed to update values for glue record at %s: %w", id, err)
+		if err := client.UpdateGlueRecord(resDomain, id, ips); err != nil {
+			return fmt.Errorf("failed to update ips for glue record at %s: %w", id, err)
 		}
 	}
 	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
