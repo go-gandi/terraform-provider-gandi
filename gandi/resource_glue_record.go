@@ -33,10 +33,9 @@ func resourceGlueRecord() *schema.Resource {
 				ForceNew:    true,
 				Description: "Host name of the glue record",
 			},
-			"values": {
+			"ips": {
 				Type:        schema.TypeList,
 				Required:    true,
-				ForceNew:    false,
 				Description: "List of IP addresses",
 			},
 		},
