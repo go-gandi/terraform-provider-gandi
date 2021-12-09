@@ -8,7 +8,7 @@ The `gluerecord` resource creates a Glue Record for a domain.
 resource "gandi_gluerecord" "my_domain_gluerecord" {
     zone = "my.domain"
     name = "ns1"
-    values = ["127.0.0.2"]
+    ips = ["127.0.0.2"]
 }
 ```
 
@@ -16,7 +16,7 @@ resource "gandi_gluerecord" "my_domain_gluerecord" {
 
 - `zone` - (Required) The FQDN of the domain.
 - `name` - (Required) The name of the record.
-- `values` - (Required) A list of the ip addresses of the record.
+- `ips` - (Required) A list of the ip addresses of the record.
 
 ## Attribute Reference
 
