@@ -2,6 +2,7 @@ package gandi
 
 import (
 	"github.com/go-gandi/go-gandi"
+	"github.com/go-gandi/go-gandi/certificate"
 	"github.com/go-gandi/go-gandi/config"
 	"github.com/go-gandi/go-gandi/domain"
 	"github.com/go-gandi/go-gandi/email"
@@ -54,6 +55,7 @@ func Provider() *schema.Provider {
 			"gandi_email_forwarding":       resourceEmailForwarding(),
 			"gandi_dnssec_key":             resourceDNSSECKey(),
 			"gandi_simplehosting_instance": resourceSimpleHostingInstance(),
+			"gandi_simplehosting_vhost":    resourceSimpleHostingVhost(),
 		},
 		ConfigureFunc: getGandiClients,
 	}
@@ -64,6 +66,7 @@ type clients struct {
 	Email         *email.Email
 	LiveDNS       *livedns.LiveDNS
 	SimpleHosting *simplehosting.SimpleHosting
+	Certificate   *certificate.Certificate
 }
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
@@ -78,11 +81,13 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	email := gandi.NewEmailClient(config)
 	domainClient := gandi.NewDomainClient(config)
 	simpleHostingClient := gandi.NewSimpleHostingClient(config)
+	certificateClient := gandi.NewCertificateClient(config)
 
 	return &clients{
 		Domain:        domainClient,
 		Email:         email,
 		LiveDNS:       liveDNS,
 		SimpleHosting: simpleHostingClient,
+		Certificate:   certificateClient,
 	}, nil
 }

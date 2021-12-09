@@ -6,6 +6,7 @@ resources](https://api.gandi.net/docs/):
 - [DNS zones](https://api.gandi.net/docs/domains/)
 - [LiveDNS service](https://api.gandi.net/docs/livedns/)
 - [Email](https://api.gandi.net/docs/email/)
+- [SimpleHosting](https://api.gandi.net/docs/simplehosting/)
 
 This provider currently doesn't support Organization or Billing APIs. We welcome pull requests to implement more functionality!
 
