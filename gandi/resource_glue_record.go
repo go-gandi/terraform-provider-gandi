@@ -66,24 +66,8 @@ func resourceGlueRecordCreate(d *schema.ResourceData, meta interface{}) (err err
 
 	d.SetId(name)
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate) - time.Second, func() *resource.RetryError {
-		var gluerecord domain.GlueRecord
-		gluerecord, err = client.GetGlueRecord(resDomain, name)
-
-		if err != nil {
-			return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
-		}
-
-		if gluerecord.Name == "" {
-			return resource.RetryableError(fmt.Errorf("expected glue record to be created but was not found"))
-		}
-
-		err = resourceGlueRecordRead(d, meta)
-		if err != nil {
-			return resource.NonRetryableError(err)
-		} else {
-			return nil
-		}
+	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		return resourceGlueRecordReadWithRetry(d, meta)
 	})
 }
 
@@ -121,6 +105,29 @@ func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error
 	return
 }
 
+func resourceGlueRecordReadWithRetry(d *schema.ResourceData, meta interface{}) *resource.RetryError {
+	client := meta.(*clients).Domain
+	resDomain := d.Get("zone").(string)
+	id := d.Id()
+
+	gluerecord, err := client.GetGlueRecord(resDomain, id)
+
+	if err != nil {
+		return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
+	}
+
+	if gluerecord.Name == "" {
+		return resource.RetryableError(fmt.Errorf("expected glue record to be created but was not found"))
+	}
+
+	err = resourceGlueRecordRead(d, meta)
+	if err != nil {
+		return resource.NonRetryableError(err)
+	} else {
+		return nil
+	}
+}
+
 func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err error) {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
@@ -133,24 +140,8 @@ func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err err
 			return fmt.Errorf("failed to update values for glue record at %s: %w", id, err)
 		}
 	}
-
-	return resource.Retry(d.Timeout(schema.TimeoutCreate) - time.Second, func() *resource.RetryError {
-		gluerecord, err := client.GetGlueRecord(resDomain, id)
-
-		if err != nil {
-			return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
-		}
-
-		if gluerecord.Name == "" {
-			return resource.RetryableError(fmt.Errorf("expected glue record to be created but was not found"))
-		}
-
-		err = resourceGlueRecordRead(d, meta)
-		if err != nil {
-			return resource.NonRetryableError(err)
-		} else {
-			return nil
-		}
+	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		return resourceGlueRecordReadWithRetry(d, meta)
 	})
 }
 
