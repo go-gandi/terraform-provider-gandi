@@ -19,4 +19,3 @@ data "gandi_gluerecord" "my_domain" {
 ## Attribute Reference
 
 - `ips` - A list of the ip addresses provided in the glue record.
-
