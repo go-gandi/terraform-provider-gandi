@@ -68,6 +68,14 @@ resource "gandi_livedns_record" "www_example_com" {
     "192.168.0.1"
   ]
 }
+
+resource "gandi_gluerecord" "example_com_gluerecord" {
+    zone = "${gandi_livedns_domain.example_com.id}"
+    name = "ns1"
+    ips = [
+        "1.1.1.1"
+    ]
+}
 ```
 
 This example sums up the available resources.

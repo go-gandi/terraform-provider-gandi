@@ -46,6 +46,7 @@ func Provider() *schema.Provider {
 			"gandi_livedns_domain_ns": dataSourceLiveDNSDomainNS(),
 			"gandi_domain":            dataSourceDomain(),
 			"gandi_mailbox":           dataSourceMailbox(),
+			"gandi_glue_record":       dataSourceGlueRecord(),
 		},
 		ResourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain":         resourceLiveDNSDomain(),
@@ -55,6 +56,7 @@ func Provider() *schema.Provider {
 			"gandi_email_forwarding":       resourceEmailForwarding(),
 			"gandi_dnssec_key":             resourceDNSSECKey(),
 			"gandi_simplehosting_instance": resourceSimpleHostingInstance(),
+			"gandi_glue_record":            resourceGlueRecord(),
 			"gandi_simplehosting_vhost":    resourceSimpleHostingVhost(),
 		},
 		ConfigureFunc: getGandiClients,
