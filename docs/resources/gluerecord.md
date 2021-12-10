@@ -1,6 +1,6 @@
 # Resource: gluerecord
 
-The `gluerecord` resource creates a Glue Record for a domain. 
+The `gluerecord` resource creates a Glue Record for a domain.
 
 ## Example Usage
 
