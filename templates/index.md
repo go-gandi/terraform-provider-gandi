@@ -2,6 +2,7 @@
 
 The Gandi provider enables the purchasing and management of the
 following Gandi resources:
+
 - [DNS zones](https://api.gandi.net/docs/domains/)
 - [LiveDNS service](https://api.gandi.net/docs/livedns/)
 - [Email](https://api.gandi.net/docs/email/)

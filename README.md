@@ -142,6 +142,14 @@ Then in the repo root dir
 pre-commit install
 ```
 
+### Generating documentation
+
+As suggested by the [Terraform
+documentation](https://www.terraform.io/docs/registry/providers/docs.html#generating-documentation),
+we use the
+[tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs)
+project to generate the provider documentation.
+
 ## Adding Dependencies
 
 This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
