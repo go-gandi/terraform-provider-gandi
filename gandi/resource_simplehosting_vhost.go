@@ -6,8 +6,8 @@ import (
 
 	"github.com/go-gandi/go-gandi/certificate"
 	"github.com/go-gandi/go-gandi/simplehosting"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceSimpleHostingVhost() *schema.Resource {
@@ -16,7 +16,7 @@ func resourceSimpleHostingVhost() *schema.Resource {
 		Read:   resourceSimpleHostingVhostRead,
 		Delete: resourceSimpleHostingVhostDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"instance_id": {

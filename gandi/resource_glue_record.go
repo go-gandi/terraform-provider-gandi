@@ -2,12 +2,12 @@ package gandi
 
 import (
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"sort"
 	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceGlueRecord() *schema.Resource {
@@ -17,7 +17,7 @@ func resourceGlueRecord() *schema.Resource {
 		Update: resourceGlueRecordUpdate,
 		Delete: resourceGlueRecordDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -35,6 +35,7 @@ func resourceGlueRecord() *schema.Resource {
 			},
 			"ips": {
 				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 				Required:    true,
 				Description: "List of IP addresses",
 			},

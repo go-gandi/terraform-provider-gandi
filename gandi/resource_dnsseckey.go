@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDNSSECKey() *schema.Resource {
@@ -42,7 +42,7 @@ func resourceDNSSECKey() *schema.Resource {
 		Delete: resourceDNSSECKeyDelete,
 		Read:   resourceDNSSECKeyRead,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
