@@ -1,19 +1,21 @@
 package gandi
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/go-gandi/go-gandi/simplehosting"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceSimpleHostingInstance() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSimpleHostingInstanceCreate,
-		Read:   resourceSimpleHostingInstanceRead,
-		Delete: resourceSimpleHostingInstanceDelete,
+		CreateContext: resourceSimpleHostingInstanceCreate,
+		Read:          resourceSimpleHostingInstanceRead,
+		DeleteContext: resourceSimpleHostingInstanceDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -80,7 +82,7 @@ func resourceSimpleHostingInstanceRead(d *schema.ResourceData, meta interface{})
 	return nil
 }
 
-func resourceSimpleHostingInstanceCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSimpleHostingInstanceCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).SimpleHosting
 	instanceId, err := client.CreateInstance(
 		simplehosting.CreateInstanceRequest{
@@ -98,11 +100,11 @@ func resourceSimpleHostingInstanceCreate(d *schema.ResourceData, meta interface{
 		},
 	)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	d.SetId(instanceId)
 
-	err = resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		client := meta.(*clients).SimpleHosting
 		instance, err := client.GetInstance(instanceId)
 		if err != nil {
@@ -114,24 +116,24 @@ func resourceSimpleHostingInstanceCreate(d *schema.ResourceData, meta interface{
 		return nil
 	})
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
-	return resourceSimpleHostingInstanceRead(d, meta)
+	return diag.FromErr(resourceSimpleHostingInstanceRead(d, meta))
 }
 
-func resourceSimpleHostingInstanceDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSimpleHostingInstanceDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).SimpleHosting
 	instanceId := d.Id()
 	_, err := client.DeleteInstance(instanceId)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
-	return resource.Retry(d.Timeout(schema.TimeoutDelete), func() *resource.RetryError {
+	return diag.FromErr(resource.RetryContext(ctx, d.Timeout(schema.TimeoutDelete), func() *resource.RetryError {
 		_, err := client.GetInstance(instanceId)
 		if err != nil {
 			return nil
 		}
 		return resource.RetryableError(fmt.Errorf("The instance %s have not been deleted yet", instanceId))
-	})
+	}))
 }

@@ -1,20 +1,22 @@
 package gandi
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/go-gandi/go-gandi/certificate"
 	"github.com/go-gandi/go-gandi/simplehosting"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceSimpleHostingVhost() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceSimpleHostingVhostCreate,
-		Read:   resourceSimpleHostingVhostRead,
-		Delete: resourceSimpleHostingVhostDelete,
+		CreateContext: resourceSimpleHostingVhostCreate,
+		Read:          resourceSimpleHostingVhostRead,
+		DeleteContext: resourceSimpleHostingVhostDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -85,7 +87,7 @@ func freeCertificateDelete(d *schema.ResourceData, meta interface{}) (err error)
 	return
 }
 
-func resourceSimpleHostingVhostCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceSimpleHostingVhostCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).SimpleHosting
 	instanceId := d.Get("instance_id").(string)
 	fqdn := d.Get("fqdn").(string)
@@ -103,11 +105,11 @@ func resourceSimpleHostingVhostCreate(d *schema.ResourceData, meta interface{}) 
 		request,
 	)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 	d.SetId(fqdn)
 
-	err = resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		instance, err := client.GetVhost(instanceId, fqdn)
 
 		if err != nil {
@@ -120,7 +122,7 @@ func resourceSimpleHostingVhostCreate(d *schema.ResourceData, meta interface{}) 
 		return nil
 	})
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Note it is plan to let the SimpleHosting API manage the
@@ -128,7 +130,7 @@ func resourceSimpleHostingVhostCreate(d *schema.ResourceData, meta interface{}) 
 	// provider.
 	err = freeCertificateCreate(d, meta)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Unfortunately, it is not possible to set an Application on
@@ -146,10 +148,10 @@ func resourceSimpleHostingVhostCreate(d *schema.ResourceData, meta interface{}) 
 			},
 		)
 		if err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
-	return resourceSimpleHostingVhostRead(d, meta)
+	return diag.FromErr(resourceSimpleHostingVhostRead(d, meta))
 }
 
 func resourceSimpleHostingVhostRead(d *schema.ResourceData, meta interface{}) error {
@@ -174,13 +176,13 @@ func resourceSimpleHostingVhostRead(d *schema.ResourceData, meta interface{}) er
 	return nil
 }
 
-func resourceSimpleHostingVhostDelete(d *schema.ResourceData, meta interface{}) error {
+func resourceSimpleHostingVhostDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).SimpleHosting
 	instanceId := d.Get("instance_id").(string)
 	fqdn := d.Get("fqdn").(string)
 	_, err := client.DeleteVhost(instanceId, fqdn)
 	if err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	// Note it is plan to let the SimpleHosting API manage the
@@ -188,7 +190,7 @@ func resourceSimpleHostingVhostDelete(d *schema.ResourceData, meta interface{}) 
 	// about potential error.
 	_ = freeCertificateDelete(d, meta)
 
-	return resource.Retry(d.Timeout(schema.TimeoutDelete), func() *resource.RetryError {
+	return diag.FromErr(resource.RetryContext(ctx, d.Timeout(schema.TimeoutDelete), func() *resource.RetryError {
 		_, err := client.GetVhost(instanceId, fqdn)
 		if err != nil {
 			return nil
@@ -197,5 +199,5 @@ func resourceSimpleHostingVhostDelete(d *schema.ResourceData, meta interface{}) 
 		// currently not provided by the go-gandi client
 		// library
 		return resource.RetryableError(fmt.Errorf("The vhost %s of instance %s have not been deleted yet", fqdn, instanceId))
-	})
+	}))
 }
