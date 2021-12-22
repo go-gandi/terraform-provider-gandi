@@ -89,9 +89,7 @@ func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error)
 		parts := strings.SplitN(id, "/", 2)
 		resDomain = parts[0]
 		id = parts[1]
-		if err = d.Set("id", id); err != nil {
-			return fmt.Errorf("failed to set id for %s: %w", d.Id(), err)
-		}
+		d.SetId(id)
 	}
 
 	keys, err := client.ListDNSSECKeys(resDomain)
@@ -125,15 +123,6 @@ func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error)
 	if err = d.Set("domain", resDomain); err != nil {
 		return fmt.Errorf("failed to set domain for %s: %w", d.Id(), err)
 	}
-	if err = d.Set("digest", found.Digest); err != nil {
-		return fmt.Errorf("failed to set digest for %s: %w", d.Id(), err)
-	}
-	if err = d.Set("digest_type", found.DigestType); err != nil {
-		return fmt.Errorf("failed to set digest_type for %s: %w", d.Id(), err)
-	}
-	if err = d.Set("keytag", found.KeyTag); err != nil {
-		return fmt.Errorf("failed to set keytag for %s: %w", d.Id(), err)
-	}
 	return
 }
 
@@ -145,9 +134,7 @@ func resourceDNSSECKeyDelete(d *schema.ResourceData, meta interface{}) (err erro
 		parts := strings.SplitN(id, "/", 2)
 		domain = parts[0]
 		id = parts[1]
-		if err = d.Set("id", id); err != nil {
-			return fmt.Errorf("failed to set id for %s: %w", d.Id(), err)
-		}
+		d.SetId(id)
 	}
 
 	err = client.DeleteDNSSECKey(domain, id)
