@@ -35,6 +35,7 @@ func resourceGlueRecord() *schema.Resource {
 			},
 			"ips": {
 				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 				Required:    true,
 				Description: "List of IP addresses",
 			},
