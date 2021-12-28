@@ -37,9 +37,3 @@ func testAccConfigInstance() string {
           }
 	`
 }
-
-func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv("GANDI_KEY"); v == "" {
-		t.Fatal("GANDI_KEY must be set for acceptance tests")
-	}
-}

@@ -1,6 +1,7 @@
 package gandi
 
 import (
+	"os"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -24,4 +25,10 @@ func TestProvider(t *testing.T) {
 
 func TestProvider_impl(t *testing.T) {
 	var _ *schema.Provider = Provider()
+}
+
+func testAccPreCheck(t *testing.T) {
+	if v := os.Getenv("GANDI_KEY"); v == "" {
+		t.Fatal("GANDI_KEY must be set for acceptance tests")
+	}
 }
