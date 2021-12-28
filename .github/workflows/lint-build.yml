@@ -23,6 +23,23 @@ jobs:
         with:
           extra_args: --all-files --show-diff-on-failure
 
+  test:
+    name: Acceptance Test
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Test
+        env:
+          GANDI_URL: https://api.sandbox.gandi.net
+          GANDI_KEY: ${{ secrets.GANDI_SANDBOX_KEY }}
+        run: |
+          make testacc
+
   build:
     name: Build
     runs-on: ${{ matrix.os }}
