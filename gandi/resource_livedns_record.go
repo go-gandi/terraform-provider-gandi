@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceLiveDNSRecord() *schema.Resource {
@@ -16,7 +16,7 @@ func resourceLiveDNSRecord() *schema.Resource {
 		Update: resourceLiveDNSRecordUpdate,
 		Delete: resourceLiveDNSRecordDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{

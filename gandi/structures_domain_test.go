@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/go-gandi/go-gandi/domain"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func TestValidateContactType(t *testing.T) {

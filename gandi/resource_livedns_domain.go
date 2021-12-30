@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-gandi/go-gandi/livedns"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceLiveDNSDomain() *schema.Resource {
@@ -15,7 +15,7 @@ func resourceLiveDNSDomain() *schema.Resource {
 		Update: resourceLiveDNSDomainUpdate,
 		Delete: resourceLiveDNSDomainDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{

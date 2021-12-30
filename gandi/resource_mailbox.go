@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-gandi/go-gandi/email"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceMailbox() *schema.Resource {
@@ -46,7 +46,7 @@ func resourceMailbox() *schema.Resource {
 		Read:   resourceMailboxRead,
 		Update: resourceMailboxUpdate,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }

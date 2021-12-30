@@ -1,23 +1,25 @@
 package gandi
 
 import (
+	"context"
 	"fmt"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
 	"sort"
 	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceGlueRecord() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceGlueRecordCreate,
-		Read:   resourceGlueRecordRead,
-		Update: resourceGlueRecordUpdate,
-		Delete: resourceGlueRecordDelete,
+		CreateContext: resourceGlueRecordCreate,
+		Read:          resourceGlueRecordRead,
+		UpdateContext: resourceGlueRecordUpdate,
+		DeleteContext: resourceGlueRecordDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 
 		Schema: map[string]*schema.Schema{
@@ -44,7 +46,7 @@ func resourceGlueRecord() *schema.Resource {
 	}
 }
 
-func resourceGlueRecordCreate(d *schema.ResourceData, meta interface{}) (err error) {
+func resourceGlueRecordCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
 	name := d.Get("name").(string)
@@ -60,16 +62,16 @@ func resourceGlueRecordCreate(d *schema.ResourceData, meta interface{}) (err err
 		IPs:  ips,
 	}
 
-	err = client.CreateGlueRecord(resDomain, request)
+	err := client.CreateGlueRecord(resDomain, request)
 	if err != nil {
-		return fmt.Errorf("error creating instance: %s", err)
+		return diag.Errorf("error creating instance: %s", err)
 	}
 
 	d.SetId(name)
 
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	return diag.FromErr(resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		return resourceGlueRecordReadWithRetry(d, meta)
-	})
+	}))
 }
 
 func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error) {
@@ -112,7 +114,6 @@ func resourceGlueRecordReadWithRetry(d *schema.ResourceData, meta interface{}) *
 	id := d.Id()
 
 	gluerecord, err := client.GetGlueRecord(resDomain, id)
-
 	if err != nil {
 		return resource.NonRetryableError(fmt.Errorf("error describing instance: %s", err))
 	}
@@ -124,12 +125,11 @@ func resourceGlueRecordReadWithRetry(d *schema.ResourceData, meta interface{}) *
 	err = resourceGlueRecordRead(d, meta)
 	if err != nil {
 		return resource.NonRetryableError(err)
-	} else {
-		return nil
 	}
+	return nil
 }
 
-func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err error) {
+func resourceGlueRecordUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
 	id := d.Id()
@@ -138,27 +138,19 @@ func resourceGlueRecordUpdate(d *schema.ResourceData, meta interface{}) (err err
 		ips := d.Get("ips").([]string)
 
 		if err := client.UpdateGlueRecord(resDomain, id, ips); err != nil {
-			return fmt.Errorf("failed to update ips for glue record at %s: %w", id, err)
+			return diag.FromErr(fmt.Errorf("failed to update ips for glue record at %s: %w", id, err))
 		}
 	}
-	return resource.Retry(d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+	return diag.FromErr(resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
 		return resourceGlueRecordReadWithRetry(d, meta)
-	})
+	}))
 }
 
-func resourceGlueRecordDelete(d *schema.ResourceData, meta interface{}) (err error) {
+func resourceGlueRecordDelete(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("zone").(string)
 
 	id := d.Id()
 
-	if err != nil {
-		return err
-	}
-
-	if err = client.DeleteGlueRecord(resDomain, id); err != nil {
-		return err
-	}
-
-	return nil
+	return diag.FromErr(client.DeleteGlueRecord(resDomain, id))
 }

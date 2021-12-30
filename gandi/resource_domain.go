@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDomain() *schema.Resource {
@@ -15,7 +15,7 @@ func resourceDomain() *schema.Resource {
 		Update: resourceDomainUpdate,
 		Delete: resourceDomainDelete,
 		Importer: &schema.ResourceImporter{
-			State: schema.ImportStatePassthrough,
+			StateContext: schema.ImportStatePassthroughContext,
 		},
 		Schema: map[string]*schema.Schema{
 			"name": {
