@@ -58,6 +58,7 @@ func Provider() *schema.Provider {
 			"gandi_simplehosting_instance": resourceSimpleHostingInstance(),
 			"gandi_glue_record":            resourceGlueRecord(),
 			"gandi_simplehosting_vhost":    resourceSimpleHostingVhost(),
+			"gandi_nameservers":            resourceNameservers(),
 		},
 		ConfigureFunc: getGandiClients,
 	}
