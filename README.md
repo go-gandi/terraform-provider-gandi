@@ -52,7 +52,17 @@ provider "gandi" {
 
 resource "gandi_domain" "example_com" {
   name = "example.com"
-  nameservers = gandi_livedns_domain.example_com.nameservers
+  owner {
+    email = "gandi@example.com"
+    type = "person"
+    street_addr = "Example"
+    zip = "75000"
+    phone = "+33666666666"
+    given_name = "Gandi"
+    family_name = "Net"
+    country = "FR"
+    city = "Paris"
+  }
 }
 
 resource "gandi_livedns_domain" "example_com" {

@@ -34,19 +34,20 @@ func resourceDomain() *schema.Resource {
 				Optional:    true,
 				Description: "Should the domain autorenew",
 			},
-			"admin":   contactSchema(),
-			"billing": contactSchema(),
-			"owner":   contactSchema(),
-			"tech":    contactSchema(),
+			"owner":   contactSchema(true),
+			"admin":   contactSchema(false),
+			"billing": contactSchema(false),
+			"tech":    contactSchema(false),
 		},
 		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
 }
 
-func contactSchema() *schema.Schema {
+func contactSchema(required bool) *schema.Schema {
 	return &schema.Schema{
 		Type:     schema.TypeSet,
-		Required: true,
+		Required: required,
+		Optional: !required,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"country": {
@@ -135,10 +136,17 @@ func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
 	fqdn := d.Get("name").(string)
 	d.SetId(fqdn)
 	request := domain.CreateRequest{FQDN: fqdn,
-		Admin:   expandContact(d.Get("admin")),
-		Billing: expandContact(d.Get("billing")),
-		Owner:   expandContact(d.Get("owner")),
-		Tech:    expandContact(d.Get("tech")),
+		Owner: expandContact(d.Get("owner")),
+	}
+
+	if billing, ok := d.GetOk("billing"); ok {
+		request.Billing = expandContact(billing)
+	}
+	if tech, ok := d.GetOk("tech"); ok {
+		request.Tech = expandContact(tech)
+	}
+	if admin, ok := d.GetOk("admin"); ok {
+		request.Admin = expandContact(admin)
 	}
 
 	if nameservers, ok := d.GetOk("nameservers"); ok {
