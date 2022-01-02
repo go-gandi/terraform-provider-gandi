@@ -28,6 +28,7 @@ func resourceDomain() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeString},
 				Optional:    true,
 				Description: "A list of nameservers for the domain",
+				Deprecated:  "This nameservers attribute will be removed on next major release: the nameservers resource has to be used instead.\nSee https://github.com/go-gandi/terraform-provider-gandi/issues/88 for details.",
 			},
 			"autorenew": {
 				Type:        schema.TypeBool,
