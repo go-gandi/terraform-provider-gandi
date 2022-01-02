@@ -149,7 +149,7 @@ func TestExpandContact(t *testing.T) {
 		Zip:             "12345",
 	}
 
-	s := contactSchema()
+	s := contactSchema(true)
 	contact := s.ZeroValue().(*schema.Set)
 
 	contact.Add(map[string]interface{}{
