@@ -18,13 +18,13 @@ description: |-
 ### Required
 
 - **name** (String) The FQDN of the domain
-- **ttl** (Number) The default TTL of the domain
 
 ### Optional
 
 - **automatic_snapshots** (Boolean) Enable or disable the automatic creation of snapshots when records are changed
 - **id** (String) The ID of this resource.
 - **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- **ttl** (Number) The SOA TTL for the domain
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
