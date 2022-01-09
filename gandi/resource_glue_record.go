@@ -150,7 +150,11 @@ func resourceGlueRecordUpdate(ctx context.Context, d *schema.ResourceData, meta 
 	id := d.Id()
 
 	if d.HasChanges("ips") {
-		ips := d.Get("ips").([]string)
+		var ips []string
+		for _, i := range d.Get("ips").([]interface{}) {
+			ips = append(ips, i.(string))
+		}
+		sort.Strings(ips)
 
 		if err := client.UpdateGlueRecord(resDomain, id, ips); err != nil {
 			return diag.FromErr(fmt.Errorf("failed to update ips for glue record at %s: %w", id, err))
