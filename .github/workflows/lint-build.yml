@@ -25,6 +25,7 @@ jobs:
 
   test:
     name: Acceptance Test
+    if: github.repository == 'go-gandi/terraform-provider-gandi'
     runs-on: ubuntu-latest
     needs: lint
     steps:
