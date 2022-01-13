@@ -27,13 +27,15 @@ func resourceLiveDNSDomain() *schema.Resource {
 			},
 			"ttl": {
 				Type:        schema.TypeInt,
-				Required:    true,
+				Optional:    true,
 				ForceNew:    true,
-				Description: "The default TTL of the domain",
+				Description: "The SOA TTL for the domain",
+				Deprecated:  "This ttl attribute will be removed on next major release: this attribute should not be exposed to the user.\nSee https://github.com/go-gandi/terraform-provider-gandi/pull/90 for details.",
 			},
 			"automatic_snapshots": {
 				Type:        schema.TypeBool,
 				Optional:    true,
+				Default:     true,
 				Description: "Enable or disable the automatic creation of snapshots when records are changed",
 			},
 		},
@@ -42,19 +44,20 @@ func resourceLiveDNSDomain() *schema.Resource {
 }
 
 func resourceLiveDNSDomainCreate(d *schema.ResourceData, meta interface{}) error {
+	soaTTL := 86400
 	name := d.Get("name").(string)
-	ttl := d.Get("ttl").(int)
+	if ttl, ok := d.GetOk("ttl"); ok {
+		soaTTL = ttl.(int)
+	}
 	client := meta.(*clients).LiveDNS
-	_, err := client.CreateDomain(name, ttl)
+	_, err := client.CreateDomain(name, soaTTL)
 	if err != nil {
 		return err
 	}
 	d.SetId(name)
-	if autosnap, ok := d.GetOk("automatic_snapshots"); ok {
-		a := autosnap.(bool)
-		if _, err := client.UpdateDomain(name, livedns.UpdateDomainRequest{AutomaticSnapshots: &a}); err != nil {
-			return fmt.Errorf("failed to enable automatic snapshots for %s: %w", name, err)
-		}
+	autosnap := d.Get("autosnap").(bool)
+	if _, err := client.UpdateDomain(name, livedns.UpdateDomainRequest{AutomaticSnapshots: &autosnap}); err != nil {
+		return fmt.Errorf("failed to enable automatic snapshots for %s: %w", name, err)
 	}
 	return resourceLiveDNSDomainRead(d, meta)
 }
