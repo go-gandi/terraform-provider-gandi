@@ -41,6 +41,21 @@ func resourceGlueRecord() *schema.Resource {
 				Required:    true,
 				Description: "List of IP addresses",
 			},
+			"href": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The href of the record",
+			},
+			"fqdn": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The fqdn of the record",
+			},
+			"fqdn_unicode": {
+				Type:        schema.TypeString,
+				Computed:    true,
+				Description: "The fqdn unicode of the record",
+			},
 		},
 		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
@@ -102,7 +117,7 @@ func resourceGlueRecordRead(d *schema.ResourceData, meta interface{}) (err error
 	if err = d.Set("fqdn", found.FQDN); err != nil {
 		return fmt.Errorf("failed to set fqdn for %s: %w", d.Id(), err)
 	}
-	if err = d.Set("fqdnUnicode", found.FQDNUnicode); err != nil {
+	if err = d.Set("fqdn_unicode", found.FQDNUnicode); err != nil {
 		return fmt.Errorf("failed to set fqdn unicode for %s: %w", d.Id(), err)
 	}
 	return
@@ -135,7 +150,11 @@ func resourceGlueRecordUpdate(ctx context.Context, d *schema.ResourceData, meta 
 	id := d.Id()
 
 	if d.HasChanges("ips") {
-		ips := d.Get("ips").([]string)
+		var ips []string
+		for _, i := range d.Get("ips").([]interface{}) {
+			ips = append(ips, i.(string))
+		}
+		sort.Strings(ips)
 
 		if err := client.UpdateGlueRecord(resDomain, id, ips); err != nil {
 			return diag.FromErr(fmt.Errorf("failed to update ips for glue record at %s: %w", id, err))
