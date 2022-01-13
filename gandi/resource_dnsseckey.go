@@ -1,12 +1,14 @@
 package gandi
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -38,16 +40,16 @@ func resourceDNSSECKey() *schema.Resource {
 				Description: "DNSSEC public key",
 			},
 		},
-		Create: resourceDNSSECKeyCreate,
-		Delete: resourceDNSSECKeyDelete,
-		Read:   resourceDNSSECKeyRead,
+		CreateContext: resourceDNSSECKeyCreate,
+		Delete:        resourceDNSSECKeyDelete,
+		Read:          resourceDNSSECKeyRead,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
 	}
 }
 
-func resourceDNSSECKeyCreate(d *schema.ResourceData, meta interface{}) (err error) {
+func resourceDNSSECKeyCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 	resDomain := d.Get("domain").(string)
 	publicKey := d.Get("public_key").(string)
@@ -58,27 +60,29 @@ func resourceDNSSECKeyCreate(d *schema.ResourceData, meta interface{}) (err erro
 		PublicKey: publicKey,
 	}
 
-	err = client.CreateDNSSECKey(resDomain, request)
+	err := client.CreateDNSSECKey(resDomain, request)
 	if err != nil {
-		return
+		return diag.FromErr(err)
 	}
 
-	// Sent, got 202 response. What's now?
-	time.Sleep(2 * time.Second)
-
-	keys, err := client.ListDNSSECKeys(resDomain)
-	if err != nil {
-		return
-	}
-
-	for _, k := range keys {
-		if k.PublicKey == publicKey {
-			d.SetId(strconv.Itoa(k.ID))
-			break
+	err = resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		keys, err := client.ListDNSSECKeys(resDomain)
+		if err != nil {
+			return resource.NonRetryableError(fmt.Errorf("error getting DNSSEC keys: %s", err))
 		}
+		for _, k := range keys {
+			if k.PublicKey == publicKey {
+				d.SetId(strconv.Itoa(k.ID))
+				return nil
+			}
+		}
+		return resource.RetryableError(fmt.Errorf("expected DNSSEC key not found"))
+	})
+	if err != nil {
+		return diag.FromErr(err)
 	}
 
-	return resourceDNSSECKeyRead(d, meta)
+	return diag.FromErr(resourceDNSSECKeyRead(d, meta))
 }
 
 func resourceDNSSECKeyRead(d *schema.ResourceData, meta interface{}) (err error) {
