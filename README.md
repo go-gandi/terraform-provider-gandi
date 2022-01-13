@@ -39,7 +39,7 @@ Note: sharing_id is optional. It is used e.g. when the API key is registered to 
 terraform {
   required_providers {
     gandi = {
-      version = "2.0.0-rc3"
+      version = "~> 2.0.0"
       source  = "github/go-gandi/gandi"
     }
   }
