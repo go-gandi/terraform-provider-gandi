@@ -138,7 +138,7 @@ To compile the provider, run `make`.
 
 ### Linting
 
-We use [pre-commit](https://pre-commit.com/) to managing and maintaining hooks, you can follow the [official website instructions](https://pre-commit.com/#install) to install it.
+We use [pre-commit](https://pre-commit.com/) to manage and maintain the pre-commit hooks, you can follow the [official instructions](https://pre-commit.com/#install) to install it.
 
 **Install**
 
