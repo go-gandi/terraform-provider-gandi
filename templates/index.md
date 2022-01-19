@@ -14,13 +14,11 @@ Use the navigation to the left to read about the available resources.
 
 ## Example Usage
 
-Terraform 0.13 and later:
-
 ```terraform
 terraform {
   required_providers {
     gandi = {
-      version = "~> 2.0"
+      version = "~> 2.0.0"
       source   = "go-gandi/gandi"
     }
   }
@@ -32,20 +30,6 @@ provider "gandi" {
 
 resource "gandi_domain" "example_com" {
   name = "example.com"
-  nameservers = ["a.dns.server"]
-}
-```
-
-Terraform 0.12:
-
-```terraform
-provider "gandi" {
-  key = "MY_API_KEY"
-}
-
-resource "gandi_domain" "example_com" {
-  name = "example.com"
-  nameservers = ["a.dns.server"]
 }
 ```
 
