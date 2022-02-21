@@ -1,4 +1,4 @@
-# Terraform Gandi Provider
+# <a href="https://github.com/go-gandi/"><img align="right" src="./go-gandi.svg" alt="go-gandi community logo" title="go-gandi community" style="width: 120px; height: 84px;" width="120" height="84"/></a> Terraform Gandi Provider
 
 This provider supports managing the following [Gandi
 resources](https://api.gandi.net/docs/):
