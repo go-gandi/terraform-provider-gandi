@@ -17,22 +17,22 @@ description: |-
 
 ### Required
 
-- **database_name** (String) The name of the database type ('mysql' or 'pgsql')
-- **language_name** (String) The name of the language ('php', 'python', 'nodejs' or 'ruby')
-- **location** (String) The datacenter location of the instance ('FR' or 'LU')
-- **name** (String) The name of the SimpleHosting instance
-- **size** (String) The size of the SimpleHosting instance ('s+', 'm', 'l' or 'xxl')
+- `database_name` (String) The name of the database type ('mysql' or 'pgsql')
+- `language_name` (String) The name of the language ('php', 'python', 'nodejs' or 'ruby')
+- `location` (String) The datacenter location of the instance ('FR' or 'LU')
+- `name` (String) The name of the SimpleHosting instance
+- `size` (String) The size of the SimpleHosting instance ('s+', 'm', 'l' or 'xxl')
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `id` (String) The ID of this resource.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
 
 Optional:
 
-- **default** (String)
+- `default` (String)
 
 

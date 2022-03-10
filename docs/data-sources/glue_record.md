@@ -17,15 +17,15 @@ description: |-
 
 ### Required
 
-- **name** (String) Host name of the glue record
-- **zone** (String) Domain name
+- `name` (String) Host name of the glue record
+- `zone` (String) Domain name
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ### Read-Only
 
-- **ips** (List of String) A list of the ip addresses provided for the glue record
+- `ips` (List of String) A list of the ip addresses provided for the glue record
 
 

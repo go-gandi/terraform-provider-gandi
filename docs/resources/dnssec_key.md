@@ -17,13 +17,13 @@ description: |-
 
 ### Required
 
-- **algorithm** (Number) DNSSEC algorithm type
-- **domain** (String) Domain name
-- **public_key** (String) DNSSEC public key
-- **type** (String) DNSSEC key type
+- `algorithm` (Number) DNSSEC algorithm type
+- `domain` (String) Domain name
+- `public_key` (String) DNSSEC public key
+- `type` (String) DNSSEC key type
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 

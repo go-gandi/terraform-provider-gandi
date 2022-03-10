@@ -17,26 +17,26 @@ description: |-
 
 ### Required
 
-- **ips** (List of String) List of IP addresses
-- **name** (String) Host name of the glue record
-- **zone** (String) Domain name
+- `ips` (List of String) List of IP addresses
+- `name` (String) Host name of the glue record
+- `zone` (String) Domain name
 
 ### Optional
 
-- **id** (String) The ID of this resource.
-- **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `id` (String) The ID of this resource.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
-- **fqdn** (String) The fqdn of the record
-- **fqdn_unicode** (String) The fqdn unicode of the record
-- **href** (String) The href of the record
+- `fqdn` (String) The fqdn of the record
+- `fqdn_unicode` (String) The fqdn unicode of the record
+- `href` (String) The href of the record
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
 
 Optional:
 
-- **default** (String)
+- `default` (String)
 
 

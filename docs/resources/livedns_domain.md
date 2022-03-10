@@ -17,20 +17,20 @@ description: |-
 
 ### Required
 
-- **name** (String) The FQDN of the domain
+- `name` (String) The FQDN of the domain
 
 ### Optional
 
-- **automatic_snapshots** (Boolean) Enable or disable the automatic creation of snapshots when records are changed
-- **id** (String) The ID of this resource.
-- **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
-- **ttl** (Number, Deprecated) The SOA TTL for the domain
+- `automatic_snapshots` (Boolean) Enable or disable the automatic creation of snapshots when records are changed
+- `id` (String) The ID of this resource.
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `ttl` (Number, Deprecated) The SOA TTL for the domain
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
 
 Optional:
 
-- **default** (String)
+- `default` (String)
 
 
