@@ -46,18 +46,9 @@ var flattenContactType = []string{
 
 func expandContact(in interface{}) *domain.Contact {
 	list := in.(*schema.Set).List()
-
-	contact := map[string]interface{}{}
-
-	// For some reason I don't understand, sometimes
-	// there are empty elements in the middle of the
-	// list, so we have to filter them out
-	for _, elem := range list {
-		candidate := elem.(map[string]interface{})
-		if candidate["given_name"].(string) != "" {
-			contact = candidate
-		}
-	}
+	// We are sure the TypeSet contains a single element thanks to
+	// the MaxItems=1 constraint
+	contact := list[0].(map[string]interface{})
 
 	dataObfuscated := contact["data_obfuscated"].(bool)
 	mailObfuscated := contact["mail_obfuscated"].(bool)

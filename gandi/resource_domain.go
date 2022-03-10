@@ -49,6 +49,7 @@ func contactSchema(required bool) *schema.Schema {
 		Type:     schema.TypeSet,
 		Required: required,
 		Optional: !required,
+		MaxItems: 1,
 		Elem: &schema.Resource{
 			Schema: map[string]*schema.Schema{
 				"country": {
