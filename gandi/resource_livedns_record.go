@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-gandi/go-gandi/types"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -100,9 +101,16 @@ func resourceLiveDNSRecordRead(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 	record, err := client.GetDomainRecordByNameAndType(zone, name, recordType)
+
 	if err != nil {
+		requestError, ok := err.(*types.RequestError)
+		if ok && requestError.StatusCode == 404 {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
+
 	if err = d.Set("zone", zone); err != nil {
 		return fmt.Errorf("failed to set zone for %s: %w", d.Id(), err)
 	}
