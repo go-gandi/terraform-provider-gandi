@@ -180,8 +180,19 @@ func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 	if err = d.Set("name", response.FQDN); err != nil {
 		return fmt.Errorf("failed to set name for %s: %w", d.Id(), err)
 	}
-	if err = d.Set("nameservers", response.Nameservers); err != nil {
-		return fmt.Errorf("failed to set nameservers for %s: %w", d.Id(), err)
+
+	// Nameservers are only set when livedns is not used. When
+	// livedns is used, this nameservers list is managed by Gandi:
+	// the user should not have to care about them.
+	livedns, err := client.GetLiveDNS(fqdn)
+	if err != nil {
+		d.SetId("")
+		return err
+	}
+	if livedns.Current != "livedns" {
+		if err = d.Set("nameservers", response.Nameservers); err != nil {
+			return fmt.Errorf("failed to set nameservers for %s: %w", d.Id(), err)
+		}
 	}
 	if err = d.Set("autorenew", response.AutoRenew.Enabled); err != nil {
 		return fmt.Errorf("failed to set autorenew for %s: %w", d.Id(), err)
