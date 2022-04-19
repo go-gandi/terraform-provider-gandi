@@ -10,6 +10,8 @@ resources](https://api.gandi.net/docs/):
 
 This provider currently doesn't support Organization or Billing APIs. We welcome pull requests to implement more functionality!
 
+This is not an officially supported Gandi project.
+
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 0.12.x
