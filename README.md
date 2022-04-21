@@ -10,6 +10,8 @@ resources](https://api.gandi.net/docs/):
 
 This provider currently doesn't support Organization or Billing APIs. We welcome pull requests to implement more functionality!
 
+This is not an officially supported Gandi project.
+
 ## Requirements
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 0.12.x
@@ -126,9 +128,11 @@ resource "gandi_livedns_record" "www" {
 
 ## Licensing
 
-This provider is distributed under the terms of the Mozilla Public License version 2.0. See the `LICENSE` file.
+This provider is distributed under the terms of the Mozilla Public
+License version 2.0 (see the [`LICENSE` file](./LICENSE)).
 
-Its main author is not affiliated in any way with Gandi - apart from being a happy customer of their services.
+Its initial author (@tiramiseb) is not affiliated in any way with
+Gandi - apart from being a happy customer of their services.
 
 ## Development
 
