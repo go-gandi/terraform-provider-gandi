@@ -1,7 +1,10 @@
 package gandi
 
 import (
+	"fmt"
 	"os"
+	"reflect"
+	"sort"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/logging"
@@ -9,6 +12,7 @@ import (
 	"github.com/go-gandi/go-gandi"
 	"github.com/go-gandi/go-gandi/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 )
 
 func TestAccRecord_basic(t *testing.T) {
@@ -206,5 +210,102 @@ func TestKeepRecordsInApiAndTF(t *testing.T) {
 		if !areStringSlicesEqual(recordsInBoth, awaitedRecords) {
 			t.Errorf("should only contains values that are both in api and terraform")
 		}
+	})
+}
+
+func testAccConfigMutableRecord() string {
+	return `
+	  resource "gandi_livedns_record" "terraform_provider_gandi_com" {
+	    zone = "terraform-provider-gandi.com"
+            name = "mutable"
+            mutable = true
+            type = "TXT"
+            ttl = 3600
+            values = ["terraform-1"]
+          }
+	`
+}
+
+func updateRecord(values []string) {
+	config := config.Config{
+		APIURL: os.Getenv("GANDI_URL"),
+		APIKey: os.Getenv("GANDI_KEY"),
+		Debug:  logging.IsDebugOrHigher(),
+	}
+	liveDNS := gandi.NewLiveDNSClient(config)
+	_, err := liveDNS.UpdateDomainRecordByNameAndType(
+		"terraform-provider-gandi.com",
+		"mutable",
+		"TXT",
+		3600,
+		values)
+	if err != nil {
+		return
+	}
+}
+
+func checkRecordValuesOnAPI(state *terraform.State, expected []string) error {
+	config := config.Config{
+		APIURL: os.Getenv("GANDI_URL"),
+		APIKey: os.Getenv("GANDI_KEY"),
+		Debug:  logging.IsDebugOrHigher(),
+	}
+	liveDNS := gandi.NewLiveDNSClient(config)
+	rec, err := liveDNS.GetDomainRecordByNameAndType(
+		"terraform-provider-gandi.com",
+		"mutable",
+		"TXT")
+	if err != nil {
+		return err
+	}
+	sort.Strings(rec.RrsetValues)
+	sort.Strings(expected)
+	if !reflect.DeepEqual(rec.RrsetValues, expected) {
+		return fmt.Errorf("TXT record values on the API are not the expected ones")
+	}
+	return nil
+}
+
+// TestAccRecord_mutable tests the mutable attribute on record ressource.
+// - we create a mutable record with Terraform (this record can already exist on the API)
+// - we add a value to this record with the API
+// - we reapply Terraform and it should ignore this new value (this value is not removed as it would be if mutable = false)
+// - the record is deleted from the Terraform state and the manually added value should still exist on the API
+func TestAccRecord_mutable(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		IsUnitTest: true,
+		Providers:  testAccProviders,
+		PreCheck:   func() { testAccPreCheck(t) },
+		CheckDestroy: func(state *terraform.State) error {
+			return checkRecordValuesOnAPI(
+				state,
+				[]string{"\"manual-1\""})
+		},
+		Steps: []resource.TestStep{
+			{
+				Config: testAccConfigMutableRecord(),
+			},
+			{
+				// The record is updated: a values is
+				// added and Terraform should ignore
+				// it.
+				PreConfig: func() {
+					updateRecord([]string{"terraform-1", "manual-1"})
+				},
+				Config: testAccConfigMutableRecord(),
+				Check: resource.ComposeAggregateTestCheckFunc(
+					// The terraform state should only contains a single value
+					resource.TestCheckResourceAttr(
+						"gandi_livedns_record.terraform_provider_gandi_com",
+						"values.0",
+						"terraform-1"),
+					// The API should contains two values
+					func(state *terraform.State) error {
+						return checkRecordValuesOnAPI(
+							state,
+							[]string{"\"terraform-1\"", "\"manual-1\""})
+					}),
+			},
+		},
 	})
 }
