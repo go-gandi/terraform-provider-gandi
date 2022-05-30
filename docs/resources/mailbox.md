@@ -17,14 +17,14 @@ description: |-
 
 ### Required
 
-- **domain** (String) Domain name
-- **login** (String) Login
-- **password** (String, Sensitive) Password
+- `domain` (String) Domain name
+- `login` (String) Login
+- `password` (String, Sensitive) Password
 
 ### Optional
 
-- **aliases** (List of String) Aliases for email
-- **id** (String) The ID of this resource.
-- **mailbox_type** (String) Mailbox type
+- `aliases` (List of String) Aliases for email
+- `id` (String) The ID of this resource.
+- `mailbox_type` (String) Mailbox type
 
 

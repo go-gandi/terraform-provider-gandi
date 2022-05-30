@@ -17,14 +17,14 @@ description: |-
 
 ### Required
 
-- **name** (String) The FQDN of the domain
+- `name` (String) The FQDN of the domain
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 ### Read-Only
 
-- **nameservers** (List of String) A list of nameservers for the domain
+- `nameservers` (List of String) A list of nameservers for the domain
 
 

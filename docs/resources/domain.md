@@ -17,41 +17,41 @@ description: |-
 
 ### Required
 
-- **name** (String) The FQDN of the domain
-- **owner** (Block Set, Min: 1) (see [below for nested schema](#nestedblock--owner))
+- `name` (String) The FQDN of the domain
+- `owner` (Block Set, Min: 1, Max: 1) (see [below for nested schema](#nestedblock--owner))
 
 ### Optional
 
-- **admin** (Block Set) (see [below for nested schema](#nestedblock--admin))
-- **autorenew** (Boolean) Should the domain autorenew
-- **billing** (Block Set) (see [below for nested schema](#nestedblock--billing))
-- **id** (String) The ID of this resource.
-- **nameservers** (List of String, Deprecated) A list of nameservers for the domain
-- **tech** (Block Set) (see [below for nested schema](#nestedblock--tech))
-- **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `admin` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--admin))
+- `autorenew` (Boolean) Should the domain autorenew
+- `billing` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--billing))
+- `id` (String) The ID of this resource.
+- `nameservers` (List of String, Deprecated) A list of nameservers for the domain
+- `tech` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--tech))
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 <a id="nestedblock--owner"></a>
 ### Nested Schema for `owner`
 
 Required:
 
-- **city** (String) City for the contact
-- **country** (String) The two letter country code for the contact
-- **email** (String) Contact email address
-- **family_name** (String) Family name of the contact
-- **given_name** (String) Given name of the contact
-- **phone** (String) Phone number for the contact
-- **street_addr** (String) Street Address of the contact
-- **type** (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
-- **zip** (String) Postal Code/Zipcode of the contact
+- `city` (String) City for the contact
+- `country` (String) The two letter country code for the contact
+- `email` (String) Contact email address
+- `family_name` (String) Family name of the contact
+- `given_name` (String) Given name of the contact
+- `phone` (String) Phone number for the contact
+- `street_addr` (String) Street Address of the contact
+- `type` (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
+- `zip` (String) Postal Code/Zipcode of the contact
 
 Optional:
 
-- **data_obfuscated** (Boolean) Whether or not to obfuscate contact data in WHOIS
-- **extra_parameters** (Map of String) Extra parameters, needed for some jurisdictions
-- **mail_obfuscated** (Boolean) Whether or not to obfuscate contact email in WHOIS
-- **organisation** (String) The legal name of the organisation. Required for types other than person
-- **state** (String) The state code for the contact
+- `data_obfuscated` (Boolean) Whether or not to obfuscate contact data in WHOIS
+- `extra_parameters` (Map of String) Extra parameters, needed for some jurisdictions
+- `mail_obfuscated` (Boolean) Whether or not to obfuscate contact email in WHOIS
+- `organisation` (String) The legal name of the organisation. Required for types other than person
+- `state` (String) The state code for the contact
 
 
 <a id="nestedblock--admin"></a>
@@ -59,23 +59,23 @@ Optional:
 
 Required:
 
-- **city** (String) City for the contact
-- **country** (String) The two letter country code for the contact
-- **email** (String) Contact email address
-- **family_name** (String) Family name of the contact
-- **given_name** (String) Given name of the contact
-- **phone** (String) Phone number for the contact
-- **street_addr** (String) Street Address of the contact
-- **type** (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
-- **zip** (String) Postal Code/Zipcode of the contact
+- `city` (String) City for the contact
+- `country` (String) The two letter country code for the contact
+- `email` (String) Contact email address
+- `family_name` (String) Family name of the contact
+- `given_name` (String) Given name of the contact
+- `phone` (String) Phone number for the contact
+- `street_addr` (String) Street Address of the contact
+- `type` (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
+- `zip` (String) Postal Code/Zipcode of the contact
 
 Optional:
 
-- **data_obfuscated** (Boolean) Whether or not to obfuscate contact data in WHOIS
-- **extra_parameters** (Map of String) Extra parameters, needed for some jurisdictions
-- **mail_obfuscated** (Boolean) Whether or not to obfuscate contact email in WHOIS
-- **organisation** (String) The legal name of the organisation. Required for types other than person
-- **state** (String) The state code for the contact
+- `data_obfuscated` (Boolean) Whether or not to obfuscate contact data in WHOIS
+- `extra_parameters` (Map of String) Extra parameters, needed for some jurisdictions
+- `mail_obfuscated` (Boolean) Whether or not to obfuscate contact email in WHOIS
+- `organisation` (String) The legal name of the organisation. Required for types other than person
+- `state` (String) The state code for the contact
 
 
 <a id="nestedblock--billing"></a>
@@ -83,23 +83,23 @@ Optional:
 
 Required:
 
-- **city** (String) City for the contact
-- **country** (String) The two letter country code for the contact
-- **email** (String) Contact email address
-- **family_name** (String) Family name of the contact
-- **given_name** (String) Given name of the contact
-- **phone** (String) Phone number for the contact
-- **street_addr** (String) Street Address of the contact
-- **type** (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
-- **zip** (String) Postal Code/Zipcode of the contact
+- `city` (String) City for the contact
+- `country` (String) The two letter country code for the contact
+- `email` (String) Contact email address
+- `family_name` (String) Family name of the contact
+- `given_name` (String) Given name of the contact
+- `phone` (String) Phone number for the contact
+- `street_addr` (String) Street Address of the contact
+- `type` (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
+- `zip` (String) Postal Code/Zipcode of the contact
 
 Optional:
 
-- **data_obfuscated** (Boolean) Whether or not to obfuscate contact data in WHOIS
-- **extra_parameters** (Map of String) Extra parameters, needed for some jurisdictions
-- **mail_obfuscated** (Boolean) Whether or not to obfuscate contact email in WHOIS
-- **organisation** (String) The legal name of the organisation. Required for types other than person
-- **state** (String) The state code for the contact
+- `data_obfuscated` (Boolean) Whether or not to obfuscate contact data in WHOIS
+- `extra_parameters` (Map of String) Extra parameters, needed for some jurisdictions
+- `mail_obfuscated` (Boolean) Whether or not to obfuscate contact email in WHOIS
+- `organisation` (String) The legal name of the organisation. Required for types other than person
+- `state` (String) The state code for the contact
 
 
 <a id="nestedblock--tech"></a>
@@ -107,23 +107,23 @@ Optional:
 
 Required:
 
-- **city** (String) City for the contact
-- **country** (String) The two letter country code for the contact
-- **email** (String) Contact email address
-- **family_name** (String) Family name of the contact
-- **given_name** (String) Given name of the contact
-- **phone** (String) Phone number for the contact
-- **street_addr** (String) Street Address of the contact
-- **type** (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
-- **zip** (String) Postal Code/Zipcode of the contact
+- `city` (String) City for the contact
+- `country` (String) The two letter country code for the contact
+- `email` (String) Contact email address
+- `family_name` (String) Family name of the contact
+- `given_name` (String) Given name of the contact
+- `phone` (String) Phone number for the contact
+- `street_addr` (String) Street Address of the contact
+- `type` (String) One of 'person', 'company', 'association', 'public body', or 'reseller'
+- `zip` (String) Postal Code/Zipcode of the contact
 
 Optional:
 
-- **data_obfuscated** (Boolean) Whether or not to obfuscate contact data in WHOIS
-- **extra_parameters** (Map of String) Extra parameters, needed for some jurisdictions
-- **mail_obfuscated** (Boolean) Whether or not to obfuscate contact email in WHOIS
-- **organisation** (String) The legal name of the organisation. Required for types other than person
-- **state** (String) The state code for the contact
+- `data_obfuscated` (Boolean) Whether or not to obfuscate contact data in WHOIS
+- `extra_parameters` (Map of String) Extra parameters, needed for some jurisdictions
+- `mail_obfuscated` (Boolean) Whether or not to obfuscate contact email in WHOIS
+- `organisation` (String) The legal name of the organisation. Required for types other than person
+- `state` (String) The state code for the contact
 
 
 <a id="nestedblock--timeouts"></a>
@@ -131,6 +131,6 @@ Optional:
 
 Optional:
 
-- **default** (String)
+- `default` (String)
 
 

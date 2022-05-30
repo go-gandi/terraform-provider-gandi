@@ -17,11 +17,11 @@ description: |-
 
 ### Required
 
-- **destinations** (List of String) Forwards to email addresses
-- **source** (String) Account alias name
+- `destinations` (List of String) Forwards to email addresses
+- `source` (String) Account alias name
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 

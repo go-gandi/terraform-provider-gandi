@@ -17,11 +17,11 @@ description: |-
 
 ### Required
 
-- **domain** (String) Domain name
-- **mailbox_id** (String) Mailbox ID
+- `domain` (String) Domain name
+- `mailbox_id` (String) Mailbox ID
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 

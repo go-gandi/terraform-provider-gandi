@@ -17,25 +17,25 @@ description: |-
 
 ### Required
 
-- **fqdn** (String) The FQDN of the Vhost
-- **instance_id** (String) The ID of the SimpleHosting instance
+- `fqdn` (String) The FQDN of the Vhost
+- `instance_id` (String) The ID of the SimpleHosting instance
 
 ### Optional
 
-- **application** (String) The name of an application to install ('grav', 'matomo', 'nextcloud', 'prestashop', 'wordpress')
-- **id** (String) The ID of this resource.
-- **linked_dns_zone_alteration** (Boolean) Whether to alter the linked DNS Zone
-- **timeouts** (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+- `application` (String) The name of an application to install ('grav', 'matomo', 'nextcloud', 'prestashop', 'wordpress')
+- `id` (String) The ID of this resource.
+- `linked_dns_zone_alteration` (Boolean) Whether to alter the linked DNS Zone
+- `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
-- **certificate_id** (String) The ID of the created free certificate
+- `certificate_id` (String) The ID of the created free certificate
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`
 
 Optional:
 
-- **default** (String)
+- `default` (String)
 
 

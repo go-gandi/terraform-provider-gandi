@@ -17,10 +17,10 @@ description: |-
 
 ### Required
 
-- **name** (String) The FQDN of the domain
+- `name` (String) The FQDN of the domain
 
 ### Optional
 
-- **id** (String) The ID of this resource.
+- `id` (String) The ID of this resource.
 
 
