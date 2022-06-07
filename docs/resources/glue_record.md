@@ -23,7 +23,6 @@ description: |-
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
@@ -31,6 +30,7 @@ description: |-
 - `fqdn` (String) The fqdn of the record
 - `fqdn_unicode` (String) The fqdn unicode of the record
 - `href` (String) The href of the record
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`

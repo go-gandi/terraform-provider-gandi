@@ -20,7 +20,7 @@ description: |-
 - `destinations` (List of String) Forwards to email addresses
 - `source` (String) Account alias name
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.
 

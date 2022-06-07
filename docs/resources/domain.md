@@ -25,10 +25,13 @@ description: |-
 - `admin` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--admin))
 - `autorenew` (Boolean) Should the domain autorenew
 - `billing` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--billing))
-- `id` (String) The ID of this resource.
 - `nameservers` (List of String, Deprecated) A list of nameservers for the domain
 - `tech` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--tech))
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--owner"></a>
 ### Nested Schema for `owner`

@@ -19,12 +19,9 @@ description: |-
 
 - `name` (String) The FQDN of the domain
 
-### Optional
-
-- `id` (String) The ID of this resource.
-
 ### Read-Only
 
+- `id` (String) The ID of this resource.
 - `nameservers` (List of String) A list of nameservers for the domain
 
 

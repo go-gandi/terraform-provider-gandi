@@ -20,7 +20,7 @@ description: |-
 - `domain` (String) Domain name
 - `mailbox_id` (String) Mailbox ID
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.
 
