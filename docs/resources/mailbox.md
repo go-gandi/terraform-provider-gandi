@@ -24,7 +24,10 @@ description: |-
 ### Optional
 
 - `aliases` (List of String) Aliases for email
-- `id` (String) The ID of this resource.
 - `mailbox_type` (String) Mailbox type
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 

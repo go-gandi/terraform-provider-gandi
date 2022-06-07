@@ -22,7 +22,7 @@ description: |-
 - `public_key` (String) DNSSEC public key
 - `type` (String) DNSSEC key type
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.
 

@@ -25,13 +25,13 @@ description: |-
 
 ### Optional
 
-- `id` (String) The ID of this resource.
 - `mutable` (Boolean) Define if the record can be modified outside Terraform (this currently only works for TXT records)
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
 ### Read-Only
 
 - `href` (String) The href of the record
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`

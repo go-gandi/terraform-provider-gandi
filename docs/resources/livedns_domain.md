@@ -22,9 +22,12 @@ description: |-
 ### Optional
 
 - `automatic_snapshots` (Boolean) Enable or disable the automatic creation of snapshots when records are changed
-- `id` (String) The ID of this resource.
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 - `ttl` (Number, Deprecated) The SOA TTL for the domain
+
+### Read-Only
+
+- `id` (String) The ID of this resource.
 
 <a id="nestedblock--timeouts"></a>
 ### Nested Schema for `timeouts`

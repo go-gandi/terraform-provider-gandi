@@ -20,12 +20,9 @@ description: |-
 - `name` (String) Host name of the glue record
 - `zone` (String) Domain name
 
-### Optional
-
-- `id` (String) The ID of this resource.
-
 ### Read-Only
 
+- `id` (String) The ID of this resource.
 - `ips` (List of String) A list of the ip addresses provided for the glue record
 
 

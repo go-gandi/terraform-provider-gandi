@@ -19,7 +19,7 @@ description: |-
 
 - `name` (String) The FQDN of the domain
 
-### Optional
+### Read-Only
 
 - `id` (String) The ID of this resource.
 
