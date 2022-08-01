@@ -1,19 +1,22 @@
 package gandi
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/go-gandi/go-gandi/domain"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func resourceDomain() *schema.Resource {
 	return &schema.Resource{
-		Create: resourceDomainCreate,
-		Read:   resourceDomainRead,
-		Update: resourceDomainUpdate,
-		Delete: resourceDomainDelete,
+		CreateContext: resourceDomainCreate,
+		Read:          resourceDomainRead,
+		Update:        resourceDomainUpdate,
+		Delete:        resourceDomainDelete,
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
@@ -136,7 +139,7 @@ func contactSchema(optional bool) *schema.Schema {
 	}
 }
 
-func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
+func resourceDomainCreate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 
 	fqdn := d.Get("name").(string)
@@ -163,16 +166,25 @@ func resourceDomainCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if err := client.CreateDomain(request); err != nil {
-		return err
+		return diag.FromErr(err)
 	}
 
 	if autorenew, ok := d.GetOk("autorenew"); ok {
 		if err := client.SetAutoRenew(fqdn, autorenew.(bool)); err != nil {
-			return err
+			return diag.FromErr(err)
 		}
 	}
 
-	return resourceDomainRead(d, meta)
+	err := resource.RetryContext(ctx, d.Timeout(schema.TimeoutCreate), func() *resource.RetryError {
+		if _, err := client.GetDomain(fqdn); err != nil {
+			return resource.RetryableError(err)
+		}
+		return nil
+	})
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	return diag.FromErr(resourceDomainRead(d, meta))
 }
 
 func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
