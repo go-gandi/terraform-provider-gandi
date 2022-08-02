@@ -140,6 +140,11 @@ If you wish to work on the provider, you'll first need [Go](http://www.golang.or
 
 To compile the provider, run `make`.
 
+To use the provider, run `make install` to populate your local
+Terraform provider cache
+(`$(HOME)/.terraform.d/plugins/registry.terraform.io`). On a next
+`terraform init`, Terraform then picks the provider from this directory.
+
 ### Linting
 
 We use [pre-commit](https://pre-commit.com/) to manage and maintain the pre-commit hooks, you can follow the [official instructions](https://pre-commit.com/#install) to install it.

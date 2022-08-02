@@ -44,32 +44,44 @@ var flattenContactType = []string{
 	"reseller",
 }
 
+func Bool(in bool) *bool {
+	return &in
+}
+
 func expandContact(in interface{}) *domain.Contact {
+	var cnt domain.Contact
 	list := in.(*schema.Set).List()
-	// We are sure the TypeSet contains a single element thanks to
-	// the MaxItems=1 constraint
-	contact := list[0].(map[string]interface{})
 
-	dataObfuscated := contact["data_obfuscated"].(bool)
-	mailObfuscated := contact["mail_obfuscated"].(bool)
+	// For an unknown reason, Terraform provides two TypeSet blocks
+	// on an update: one is empty, while the other one contains
+	// the actual data. This seems to be a known issue :/
+	// See https://discuss.hashicorp.com/t/using-typeset-in-provider-always-adds-an-empty-element-on-update/18566
+	for _, elt := range list {
+		contact := elt.(map[string]interface{})
 
-	cnt := domain.Contact{
-		Country:         contact["country"].(string),
-		State:           contact["state"].(string),
-		DataObfuscated:  &dataObfuscated,
-		MailObfuscated:  &mailObfuscated,
-		Email:           contact["email"].(string),
-		FamilyName:      contact["family_name"].(string),
-		GivenName:       contact["given_name"].(string),
-		StreetAddr:      contact["street_addr"].(string),
-		Phone:           contact["phone"].(string),
-		City:            contact["city"].(string),
-		OrgName:         contact["organisation"].(string),
-		Zip:             contact["zip"].(string),
-		ContactType:     expandContactType[contact["type"].(string)],
-		ExtraParameters: contact["extra_parameters"].(map[string]interface{}),
+		cnt = domain.Contact{
+			Country:         contact["country"].(string),
+			State:           contact["state"].(string),
+			DataObfuscated:  Bool(contact["data_obfuscated"].(bool)),
+			MailObfuscated:  Bool(contact["mail_obfuscated"].(bool)),
+			Email:           contact["email"].(string),
+			FamilyName:      contact["family_name"].(string),
+			GivenName:       contact["given_name"].(string),
+			StreetAddr:      contact["street_addr"].(string),
+			Phone:           contact["phone"].(string),
+			City:            contact["city"].(string),
+			OrgName:         contact["organisation"].(string),
+			Zip:             contact["zip"].(string),
+			ContactType:     expandContactType[contact["type"].(string)],
+			ExtraParameters: contact["extra_parameters"].(map[string]interface{}),
+		}
+		// Since FamilyName is a required attribute, we can
+		// use it to detect the initialized block :/
+		if cnt.FamilyName != "" {
+			return &cnt
+		}
 	}
-	return &cnt
+	return nil
 }
 
 func expandNameServers(ns []interface{}) (ret []string) {
