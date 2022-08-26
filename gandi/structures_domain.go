@@ -84,7 +84,7 @@ func expandContact(in interface{}) *domain.Contact {
 	return nil
 }
 
-func expandNameServers(ns []interface{}) (ret []string) {
+func expandArray(ns []interface{}) (ret []string) {
 	// We need to allocate at least 0 element. Otherwise, the
 	// empty list is json encoded to null instead of [].
 	// See https://apoorvam.github.io/blog/2017/golang-json-marshal-slice-as-empty-array-not-null/
