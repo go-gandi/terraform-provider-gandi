@@ -169,6 +169,21 @@ we use the
 [tfplugindocs](https://github.com/hashicorp/terraform-plugin-docs)
 project to generate the provider documentation.
 
+To generate the documentation, just run:
+
+     $ tfplugindocs
+
+### Releasing
+
+There are GitHub actions configured to generate a release from a tag
+such as described in the [Terraform provider
+documentation](https://learn.hashicorp.com/tutorials/terraform/provider-release-publish?in=terraform/providers)
+
+To publish a new release:
+
+    $ git tag vX.X
+    $ git push origin vX.X
+
 ## Adding Dependencies
 
 This provider uses [Go modules](https://github.com/golang/go/wiki/Modules).
