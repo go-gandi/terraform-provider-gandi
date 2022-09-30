@@ -1,4 +1,4 @@
-module github.com/go-gandi/terraform-provider-gandi
+module github.com/go-gandi/terraform-provider-gandi/v2
 
 go 1.16
 
