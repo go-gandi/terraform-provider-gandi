@@ -26,6 +26,7 @@ description: |-
 - `autorenew` (Boolean) Should the domain autorenew
 - `billing` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--billing))
 - `nameservers` (List of String, Deprecated) A list of nameservers for the domain
+- `tags` (List of String) A list of tags attached to the domain
 - `tech` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--tech))
 - `timeouts` (Block, Optional) (see [below for nested schema](#nestedblock--timeouts))
 
