@@ -43,7 +43,7 @@ func resourceNameserversCreate(ctx context.Context, d *schema.ResourceData, meta
 
 	domain := d.Get("domain").(string)
 	d.SetId(domain)
-	nameservers := expandNameServers(d.Get("nameservers").([]interface{}))
+	nameservers := expandArray(d.Get("nameservers").([]interface{}))
 
 	if err := client.UpdateNameServers(domain, nameservers); err != nil {
 		return diag.FromErr(err)
@@ -78,7 +78,7 @@ func resourceNameserversRead(d *schema.ResourceData, meta interface{}) error {
 func resourceNameserversUpdate(ctx context.Context, d *schema.ResourceData, meta interface{}) diag.Diagnostics {
 	client := meta.(*clients).Domain
 	domain := d.Get("domain").(string)
-	nameservers := expandNameServers(d.Get("nameservers").([]interface{}))
+	nameservers := expandArray(d.Get("nameservers").([]interface{}))
 
 	if d.HasChange("nameservers") {
 		if err := client.UpdateNameServers(domain, nameservers); err != nil {

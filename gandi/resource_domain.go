@@ -42,6 +42,12 @@ func resourceDomain() *schema.Resource {
 			"admin":   contactSchema(true),
 			"billing": contactSchema(true),
 			"tech":    contactSchema(true),
+			"tags": {
+				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+				Description: "A list of tags attached to the domain",
+			},
 		},
 		Timeouts: &schema.ResourceTimeout{Default: schema.DefaultTimeout(1 * time.Minute)},
 	}
@@ -162,7 +168,7 @@ func resourceDomainCreate(ctx context.Context, d *schema.ResourceData, meta inte
 	}
 
 	if nameservers, ok := d.GetOk("nameservers"); ok {
-		request.Nameservers = expandNameServers(nameservers.([]interface{}))
+		request.Nameservers = expandArray(nameservers.([]interface{}))
 	}
 
 	if err := client.CreateDomain(request); err != nil {
@@ -184,6 +190,14 @@ func resourceDomainCreate(ctx context.Context, d *schema.ResourceData, meta inte
 	if err != nil {
 		return diag.FromErr(err)
 	}
+
+	if t, ok := d.GetOk("tags"); ok {
+		tags := expandArray(t.([]interface{}))
+		if err := client.SetTags(fqdn, tags); err != nil {
+			return diag.FromErr(err)
+		}
+	}
+
 	return diag.FromErr(resourceDomainRead(d, meta))
 }
 
@@ -238,6 +252,18 @@ func resourceDomainRead(d *schema.ResourceData, meta interface{}) error {
 			}
 		}
 	}
+
+	tags, err := client.GetTags(fqdn)
+	if err != nil {
+		d.SetId("")
+		return err
+	}
+	if len(tags) != 0 {
+		if err = d.Set("tags", response.Tags); err != nil {
+			return fmt.Errorf("failed to set tags for %s: %w", d.Id(), err)
+		}
+	}
+
 	return nil
 }
 
@@ -281,11 +307,19 @@ func resourceDomainUpdate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	if d.HasChange("nameservers") {
-		ns := expandNameServers(d.Get("nameservers").([]interface{}))
+		ns := expandArray(d.Get("nameservers").([]interface{}))
 		if err := client.UpdateNameServers(d.Get("name").(string), ns); err != nil {
 			return err
 		}
 	}
+
+	if d.HasChange("tags") {
+		tags := expandArray(d.Get("tags").([]interface{}))
+		if err := client.SetTags(d.Get("name").(string), tags); err != nil {
+			return err
+		}
+	}
+
 	return resourceDomainRead(d, meta)
 }
 
