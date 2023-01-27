@@ -32,7 +32,7 @@ func testAccConfigRecord() string {
 	return `
 	  resource "gandi_livedns_record" "terraform_provider_gandi_com" {
 	    zone = "terraform-provider-gandi.com"
-            name = "www"
+            name = "example"
             type = "A"
             ttl = 3600
             values = ["192.168.0.1"]
@@ -50,7 +50,7 @@ func deleteRecord() {
 	liveDNS := gandi.NewLiveDNSClient(config)
 	err := liveDNS.DeleteDomainRecord(
 		"terraform-provider-gandi.com",
-		"www",
+		"example",
 		"A")
 	// To make golangci-lint happy :/
 	if err != nil {
