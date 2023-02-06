@@ -82,8 +82,8 @@ func resourceEmailForwardingRead(d *schema.ResourceData, meta interface{}) (err 
 		}
 	}
 
-	if err = d.Set("href", response.Href); err != nil {
-		return fmt.Errorf("failed to set href for %s: %s", d.Id(), err)
+	if err = d.Set("source", d.Id()); err != nil {
+		return fmt.Errorf("failed to set source for %s: %s", d.Id(), err)
 	}
 	if err = d.Set("destinations", response.Destinations); err != nil {
 		return fmt.Errorf("failed to set destination for %s: %s", d.Id(), err)
