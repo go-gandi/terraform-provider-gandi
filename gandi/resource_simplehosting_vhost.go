@@ -116,8 +116,8 @@ func resourceSimpleHostingVhostCreate(ctx context.Context, d *schema.ResourceDat
 			return resource.NonRetryableError(fmt.Errorf("Error getting vhost %s of instance %s: %w", instanceId, fqdn, err))
 		}
 
-		if instance.Status != "running" {
-			return resource.RetryableError(fmt.Errorf("Expected vhost %s of instance %s to be running but was in state %s", instanceId, fqdn, instance.Status))
+		if instance.Status != "active" {
+			return resource.RetryableError(fmt.Errorf("Expected vhost %s of instance %s to be active but was in state %s", instanceId, fqdn, instance.Status))
 		}
 		return nil
 	})
