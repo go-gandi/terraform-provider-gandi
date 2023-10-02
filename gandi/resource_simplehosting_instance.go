@@ -110,8 +110,8 @@ func resourceSimpleHostingInstanceCreate(ctx context.Context, d *schema.Resource
 		if err != nil {
 			return resource.NonRetryableError(fmt.Errorf("Error getting instance %s: %s", instanceId, err))
 		}
-		if instance.Status != "running" {
-			return resource.RetryableError(fmt.Errorf("Expected instance %s to be running but was in state %s", instanceId, instance.Status))
+		if instance.Status != "active" {
+			return resource.RetryableError(fmt.Errorf("Expected instance %s to be active but was in state %s", instanceId, instance.Status))
 		}
 		return nil
 	})
