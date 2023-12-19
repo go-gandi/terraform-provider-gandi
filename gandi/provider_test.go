@@ -28,10 +28,10 @@ func TestProvider_impl(t *testing.T) {
 }
 
 func testAccPreCheck(t *testing.T) {
-	if v := os.Getenv("GANDI_KEY"); v == "" {
-		t.Fatal("GANDI_KEY must be set for acceptance tests")
+	if os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN") == "" && os.Getenv("GANDI_KEY") == "" {
+		t.Fatal("GANDI_PERSONAL_ACCESS_TOKEN or GANDI_KEY must be set for acceptance tests")
 	}
-	if v := os.Getenv("GANDI_URL"); v == "" {
+	if os.Getenv("GANDI_URL") == "" {
 		t.Fatal("GANDI_URL must be set for acceptance tests")
 	}
 }
