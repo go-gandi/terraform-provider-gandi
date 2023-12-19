@@ -24,7 +24,7 @@ jobs:
           extra_args: --all-files --show-diff-on-failure
 
   test:
-    name: Acceptance Test
+    name: Acceptance Tests
     # Secrets (sandbox token) are not available on forks
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -35,11 +35,17 @@ jobs:
           go-version: 1.17
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
-      - name: Test
+      - name: Test with apikey
         env:
           GANDI_URL:        https://api.sandbox.gandi.net
           GANDI_KEY:        ${{ secrets.GANDI_SANDBOX_KEY }}
           GANDI_SHARING_ID: a2f9c3dc-ab0e-11ee-b064-00163e6722b2
+        run: |
+          make testacc
+      - name: Test with personal access token
+        env:
+          GANDI_URL:        https://api.sandbox.gandi.net
+          GANDI_PERSONAL_ACCESS_TOKEN: ${{ secrets.GANDI_SANDBOX_PERSONAL_ACCESS_TOKEN }}
         run: |
           make testacc
 
