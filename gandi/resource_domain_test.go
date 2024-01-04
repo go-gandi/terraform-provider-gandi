@@ -68,12 +68,13 @@ func testAccConfig(resourceName, domainName string, tags string) string {
 	              "birth_date"               = ""
 	              "birth_department"         = ""
 	          }
-	          family_name      = "lewo"
-	          given_name       = "lewo"
+	          organisation	   = "gandi_terraform_provider_acceptance_tests"
+	          family_name      = "Tests"
+	          given_name       = "Gandi"
 	          mail_obfuscated  = false
 	          phone            = "+33.606060606"
 	          street_addr      = "Paris"
-	          type             = "person"
+	          type             = "company"
 	          zip              = "75000"
 	      }
             %s
