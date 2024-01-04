@@ -39,6 +39,7 @@ jobs:
         env:
           GANDI_URL: https://api.sandbox.gandi.net
           GANDI_KEY: ${{ secrets.GANDI_SANDBOX_KEY }}
+          GANDI_SHARING_ID: a2f9c3dc-ab0e-11ee-b064-00163e6722b2
         run: |
           make testacc
 
