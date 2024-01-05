@@ -16,18 +16,27 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
+			"personal_access_token": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				DefaultFunc: schema.EnvDefaultFunc("GANDI_PERSONAL_ACCESS_TOKEN", nil),
+				Description: "A Gandi API Personal Access Token",
+				Sensitive:   true,
+			},
 			"key": {
 				Type:        schema.TypeString,
-				Required:    true,
+				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_KEY", nil),
-				Description: "A Gandi API key",
+				Description: "(DEPRECATED) A Gandi API key",
+				Deprecated:  "use personal_access_token instead",
 				Sensitive:   true,
 			},
 			"sharing_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_SHARING_ID", nil),
-				Description: "A Gandi Sharing ID",
+				Description: "(DEPRECATED) A Gandi Sharing ID",
+				Deprecated:  "use personal_access_token instead",
 			},
 			"dry_run": {
 				Type:        schema.TypeBool,
@@ -74,11 +83,12 @@ type clients struct {
 
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	config := config.Config{
-		APIURL:    d.Get("url").(string),
-		APIKey:    d.Get("key").(string),
-		SharingID: d.Get("sharing_id").(string),
-		DryRun:    d.Get("dry_run").(bool),
-		Debug:     logging.IsDebugOrHigher(),
+		APIURL:              d.Get("url").(string),
+		APIKey:              d.Get("key").(string),
+		PersonalAccessToken: d.Get("personal_access_token").(string),
+		SharingID:           d.Get("sharing_id").(string),
+		DryRun:              d.Get("dry_run").(bool),
+		Debug:               logging.IsDebugOrHigher(),
 	}
 	liveDNS := gandi.NewLiveDNSClient(config)
 	email := gandi.NewEmailClient(config)

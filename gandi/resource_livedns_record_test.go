@@ -42,9 +42,11 @@ func testAccConfigRecord() string {
 
 func deleteRecord() {
 	config := config.Config{
-		APIURL: os.Getenv("GANDI_URL"),
-		APIKey: os.Getenv("GANDI_KEY"),
-		Debug:  logging.IsDebugOrHigher(),
+		APIURL:              os.Getenv("GANDI_URL"),
+		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
+		APIKey:              os.Getenv("GANDI_KEY"),
+		SharingID:           os.Getenv("GANDI_SHARING_ID"),
+		Debug:               logging.IsDebugOrHigher(),
 	}
 
 	liveDNS := gandi.NewLiveDNSClient(config)
@@ -228,9 +230,11 @@ func testAccConfigMutableRecord() string {
 
 func updateRecord(values []string) {
 	config := config.Config{
-		APIURL: os.Getenv("GANDI_URL"),
-		APIKey: os.Getenv("GANDI_KEY"),
-		Debug:  logging.IsDebugOrHigher(),
+		APIURL:              os.Getenv("GANDI_URL"),
+		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
+		APIKey:              os.Getenv("GANDI_KEY"),
+		SharingID:           os.Getenv("GANDI_SHARING_ID"),
+		Debug:               logging.IsDebugOrHigher(),
 	}
 	liveDNS := gandi.NewLiveDNSClient(config)
 	_, err := liveDNS.UpdateDomainRecordByNameAndType(
@@ -246,9 +250,11 @@ func updateRecord(values []string) {
 
 func checkRecordValuesOnAPI(state *terraform.State, expected []string) error {
 	config := config.Config{
-		APIURL: os.Getenv("GANDI_URL"),
-		APIKey: os.Getenv("GANDI_KEY"),
-		Debug:  logging.IsDebugOrHigher(),
+		APIURL:              os.Getenv("GANDI_URL"),
+		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
+		APIKey:              os.Getenv("GANDI_KEY"),
+		SharingID:           os.Getenv("GANDI_SHARING_ID"),
+		Debug:               logging.IsDebugOrHigher(),
 	}
 	liveDNS := gandi.NewLiveDNSClient(config)
 	rec, err := liveDNS.GetDomainRecordByNameAndType(
