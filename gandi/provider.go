@@ -1,5 +1,7 @@
 package gandi
 
+import "time"
+
 import (
 	"github.com/go-gandi/go-gandi"
 	"github.com/go-gandi/go-gandi/certificate"
@@ -49,6 +51,11 @@ func Provider() *schema.Provider {
 				DefaultFunc: schema.EnvDefaultFunc("GANDI_URL", "https://api.gandi.net"),
 				Description: "The Gandi API URL",
 			},
+			"timeout": {
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Description: "Timeout for API interactions, in seconds",
+			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"gandi_livedns_domain":    dataSourceLiveDNSDomain(),
@@ -89,6 +96,7 @@ func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 		SharingID:           d.Get("sharing_id").(string),
 		DryRun:              d.Get("dry_run").(bool),
 		Debug:               logging.IsDebugOrHigher(),
+		Timeout:             time.Duration(d.Get("timeout").(int)),
 	}
 	liveDNS := gandi.NewLiveDNSClient(config)
 	email := gandi.NewEmailClient(config)
