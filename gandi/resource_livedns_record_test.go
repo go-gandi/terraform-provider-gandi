@@ -44,7 +44,6 @@ func deleteRecord() {
 	config := config.Config{
 		APIURL:              os.Getenv("GANDI_URL"),
 		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
-		APIKey:              os.Getenv("GANDI_KEY"),
 		SharingID:           os.Getenv("GANDI_SHARING_ID"),
 		Debug:               logging.IsDebugOrHigher(),
 	}
@@ -232,7 +231,6 @@ func updateRecord(values []string) {
 	config := config.Config{
 		APIURL:              os.Getenv("GANDI_URL"),
 		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
-		APIKey:              os.Getenv("GANDI_KEY"),
 		SharingID:           os.Getenv("GANDI_SHARING_ID"),
 		Debug:               logging.IsDebugOrHigher(),
 	}
@@ -252,7 +250,6 @@ func checkRecordValuesOnAPI(state *terraform.State, expected []string) error {
 	config := config.Config{
 		APIURL:              os.Getenv("GANDI_URL"),
 		PersonalAccessToken: os.Getenv("GANDI_PERSONAL_ACCESS_TOKEN"),
-		APIKey:              os.Getenv("GANDI_KEY"),
 		SharingID:           os.Getenv("GANDI_SHARING_ID"),
 		Debug:               logging.IsDebugOrHigher(),
 	}

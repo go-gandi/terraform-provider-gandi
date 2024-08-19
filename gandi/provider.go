@@ -23,14 +23,6 @@ func Provider() *schema.Provider {
 				Description: "A Gandi API Personal Access Token",
 				Sensitive:   true,
 			},
-			"key": {
-				Type:        schema.TypeString,
-				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("GANDI_KEY", nil),
-				Description: "(DEPRECATED) A Gandi API key",
-				Deprecated:  "use personal_access_token instead",
-				Sensitive:   true,
-			},
 			"sharing_id": {
 				Type:        schema.TypeString,
 				Optional:    true,
@@ -84,7 +76,6 @@ type clients struct {
 func getGandiClients(d *schema.ResourceData) (interface{}, error) {
 	config := config.Config{
 		APIURL:              d.Get("url").(string),
-		APIKey:              d.Get("key").(string),
 		PersonalAccessToken: d.Get("personal_access_token").(string),
 		SharingID:           d.Get("sharing_id").(string),
 		DryRun:              d.Get("dry_run").(bool),

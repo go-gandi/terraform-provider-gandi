@@ -35,13 +35,6 @@ jobs:
           go-version: 1.17
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
-      - name: Test with apikey
-        env:
-          GANDI_URL: https://api.sandbox.gandi.net
-          GANDI_KEY: ${{ secrets.GANDI_SANDBOX_KEY }}
-          GANDI_SHARING_ID: a2f9c3dc-ab0e-11ee-b064-00163e6722b2
-        run: |
-          make testacc
       - name: Test with personal access token
         env:
           GANDI_URL: https://api.sandbox.gandi.net
